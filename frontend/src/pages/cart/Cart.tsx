@@ -59,11 +59,14 @@ const Cart = () => {
       <div className="flex flex-col">
         {/* subtotal and total */}
       <table className="mt-2 w-full border-separate border-spacing-y-2">
-        <tr>
+       <thead>
+         <tr>
           <th align="left">Subtotal</th>
           <th align="right">Rs. 60</th>
         </tr>
-        <tr>
+       </thead>
+        <tbody>
+          <tr>
           <td align="left">Tax</td>
           <td align="right">Rs. 2</td>
         </tr>
@@ -71,15 +74,18 @@ const Cart = () => {
           <td align="left">Charges</td>
           <td align="right">Rs. 8</td>
         </tr>
+        </tbody>
       </table>
 
       <hr className="my-4 w-full text-gray-300" />
 
       <table className="w-full  mb-4">
-        <tr>
+        <thead>
+          <tr>
           <th align="left">Total</th>
           <th align="right">Rs. 60</th>
         </tr>
+        </thead>
       </table>
 
       <OrangeButton text={"Place Order"} />
