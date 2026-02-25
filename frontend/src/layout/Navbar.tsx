@@ -1,9 +1,18 @@
 import { IoSearchOutline } from "react-icons/io5";
 import { PiBellSimpleFill } from "react-icons/pi";
+import { useUser } from "../store/useUser";
+import { FaBasketShopping } from "react-icons/fa6";
 
 const Navbar = () => {
+  const { showCart, hideSidebar, toggleShowCart } = useUser();
+
   return (
-    <header className="flex min-h-20 w-full items-center justify-center gap-4">
+    <header className="relative flex min-h-20 w-full items-center justify-center gap-4">
+      <h1
+        className={`text-3xl absolute top-[50%] translate-y-[-50%] left-5 font-bold whitespace-nowrap text-black ${hideSidebar ? "block" : "hidden"} `}
+      >
+        Le <span className="text-orange">Baratie</span>
+      </h1>
       <div className="flex w-120 items-center justify-between gap-2 rounded-4xl border border-gray-300 px-6">
         <input
           type="search"
@@ -16,6 +25,13 @@ const Navbar = () => {
       <div className="bg-orange flex h-12 w-12 cursor-pointer items-center justify-center rounded-full">
         <PiBellSimpleFill color="white" size={22} />
       </div>
+
+      <button
+        onClick={() => toggleShowCart(!showCart)}
+        className={`${showCart ? "opacity-0" : "opacity-100"} bg-orange absolute top-[50%] right-5 flex h-12 w-12 translate-y-[-50%] cursor-pointer items-center justify-center rounded-full transition-opacity duration-200 ease-in-out`}
+      >
+        <FaBasketShopping color="white" size={22} />
+      </button>
     </header>
   );
 };

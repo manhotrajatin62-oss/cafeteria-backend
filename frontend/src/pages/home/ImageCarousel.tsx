@@ -9,6 +9,7 @@ import slide3 from "../../assets/slides/slide3.jpg"
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import { useUser } from "../../store/useUser";
 
 const slides = [
   {
@@ -32,8 +33,9 @@ const slides = [
 ];
 
 const ImageCarousel = () => {
+
   return (
-    <div className="relative h-100 w-200">
+    <div className={"w-260 relative h-100"}>
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
