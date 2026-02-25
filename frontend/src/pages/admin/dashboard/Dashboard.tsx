@@ -6,7 +6,7 @@ import { HiUsers } from "react-icons/hi";
 import RevenueChart from "./RevenueChart";
 import { IoIosWallet } from "react-icons/io";
 import food from "../../../assets/food.jpg";
-import BestDishes from "../BestDishes";
+import BestDishes from "./BestDishes";
 import TopUsers from "./TopUsers";
 
 const cardData = [

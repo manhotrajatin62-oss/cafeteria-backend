@@ -5,6 +5,7 @@ import Home from "./pages/home/Home";
 import Team from "./pages/about us/Team";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import NotFound from "./ui/NotFound";
+import PendingOrders from "./pages/admin/orders/PendingOrders";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/" element={<Home/>} />
         <Route path="/about" element={<Team/>} />
         <Route path="/admin" element={<Dashboard/>} />
+        <Route path="/admin/orders" element={<PendingOrders/>} />
         <Route path="*" element={<NotFound/>} />
       </Route>
       <Route path="/login" element={<LoginPage />} />

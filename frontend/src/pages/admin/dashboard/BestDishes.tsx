@@ -1,5 +1,5 @@
 import DataTable from "react-data-table-component";
-import food from "../../assets/food.jpg";
+import food from "../../../assets/food.jpg";
 
 interface Dish {
   id: number;
