@@ -95,7 +95,7 @@ const Sidebar = () => {
       </div>
 
       {/* navigation links */}
-      <ul className="flex h-[calc(100dvh-12rem)]  flex-col items-start gap-4 p-3 text-gray-700">
+      <ul className="flex h-[calc(100dvh-12rem)] overflow-y-auto overflow-x-hidden flex-col items-start gap-4 p-3 text-gray-700">
         {(location.pathname == "/" ? sidebarUserData : sidebarAdminData)?.map(
           (item) => (
             <Link

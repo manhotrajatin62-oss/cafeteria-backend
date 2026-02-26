@@ -1,6 +1,20 @@
 import { useEffect, useState } from "react";
 
-export default function DeleteModal({ productName, onConfirm, onCancel }: any) {
+interface DeleteModalProps {
+  readonly entityName: string;
+  readonly entityLabel: string;
+  readonly onConfirm: () => void;
+  readonly onCancel: () => void;
+}
+
+export default function DeleteModal({
+  entityName,
+  entityLabel,
+  onConfirm,
+  onCancel,
+}: DeleteModalProps) {
+
+  // states
   const [visible, setVisible] = useState(false);
   const [closing, setClosing] = useState(false);
 
@@ -12,13 +26,12 @@ export default function DeleteModal({ productName, onConfirm, onCancel }: any) {
   function handleClose(callback: () => void) {
     setClosing(true);
     setVisible(false);
-
     setTimeout(callback, 300);
   }
 
   return (
 
-    // black overlay
+    // dark overlay
     <button
       className="fixed inset-0 z-50 flex items-center justify-center"
       style={{
@@ -29,7 +42,7 @@ export default function DeleteModal({ productName, onConfirm, onCancel }: any) {
       onClick={() => handleClose(onCancel)}
     >
 
-      {/* modal body */}
+      {/* delete modal body */}
       <button
         className="mx-4 flex w-full max-w-md flex-col items-center rounded-xl bg-white p-8 text-center shadow-2xl"
         style={{
@@ -41,7 +54,7 @@ export default function DeleteModal({ productName, onConfirm, onCancel }: any) {
         onClick={(e) => e.stopPropagation()}
       >
 
-        {/* warning svg */}
+        {/* Warning Icon */}
         <div className="mb-4">
           <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
             <polygon
@@ -64,27 +77,26 @@ export default function DeleteModal({ productName, onConfirm, onCancel }: any) {
           </svg>
         </div>
 
-        {/* delete product text */}
+        {/* delete text */}
         <h2 className="mb-2 text-xl font-bold text-gray-800">
-          Delete This Product?
+          Delete This {entityLabel}?
         </h2>
         <p className="mb-8 text-sm text-gray-400">
           Are you sure, You want to delete{" "}
-          <span className="font-semibold text-gray-600">{productName}?</span>
+          <span className="font-semibold text-gray-600">{entityName}?</span>
         </p>
 
         {/* yes and no buttons */}
         <div className="flex w-full gap-4">
           <button
             onClick={() => handleClose(onConfirm)}
-            className="bg-orange hover:bg-dark-orange flex-1 cursor-pointer rounded-lg py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95"
+            className="flex-1 rounded-xl bg-orange cursor-pointer py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-dark-orange active:scale-95"
           >
             Yes
           </button>
-
           <button
             onClick={() => handleClose(onCancel)}
-            className="flex-1 cursor-pointer rounded-lg bg-gray-900 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-gray-700 active:scale-95"
+            className="flex-1 rounded-xl bg-gray-900 cursor-pointer py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-gray-700 active:scale-95"
           >
             No
           </button>
