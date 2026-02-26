@@ -6,6 +6,7 @@ import Team from "./pages/about us/Team";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import NotFound from "./ui/NotFound";
 import PendingOrders from "./pages/admin/orders/PendingOrders";
+import ProductTable from "./pages/admin/products/ProductTable";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/about" element={<Team/>} />
         <Route path="/admin" element={<Dashboard/>} />
         <Route path="/admin/orders" element={<PendingOrders/>} />
+        <Route path="/admin/products" element={<ProductTable/>} />
         <Route path="*" element={<NotFound/>} />
       </Route>
       <Route path="/login" element={<LoginPage />} />

@@ -15,7 +15,7 @@ const InvoiceModal = ({ order, onClose }: any) => {
       onClick={onClose}
     >
       <button
-        className="mx-4 w-full max-w-sm rounded-lg bg-white p-6 shadow-2xl"
+        className="mx-4 w-full max-w-sm bg-white p-6 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Title */}
@@ -28,7 +28,7 @@ const InvoiceModal = ({ order, onClose }: any) => {
           <div className="flex justify-between">
             <span className="text-gray-500">Recipent</span>
             <span className="font-semibold text-gray-800">
-              Sarah {order.customer}
+              {order.customer}
             </span>
           </div>
           <div className="flex justify-between">
@@ -78,6 +78,9 @@ const InvoiceModal = ({ order, onClose }: any) => {
             <span>Charges</span>
             <span>Rs. {charges.toFixed(2)}</span>
           </div>
+
+           <hr className="my-4 border-gray-200" />
+
           <div className="flex justify-between pt-1 text-base font-bold text-gray-800">
             <span>Total</span>
             <span>Rs. {total.toFixed(2)}</span>
