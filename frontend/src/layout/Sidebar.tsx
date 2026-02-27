@@ -104,18 +104,17 @@ const Sidebar = () => {
 
       {/* navigation links */}
       <ul className="flex h-[calc(100dvh-12rem)] flex-col items-start gap-4 overflow-x-hidden overflow-y-auto p-3 text-gray-700">
-
         {navItems?.map((item) => (
           <Link
             key={item.title}
             to={item.path}
-            className="hover:bg-orange group relative w-full cursor-pointer gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
+            className={`${location.pathname.endsWith(item.path) ? "bg-orange text-white" : "hover:bg-gray-200/60"} group relative w-full cursor-pointer gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-150`}
           >
             <li className="flex items-center">
               {/* ICON — always fixed position */}
               <item.icon
                 size={20}
-                className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
+                className={`${location.pathname.endsWith(item.path) ? "text-white" : "text-icon"} shrink-0 transition-colors duration-200`}
               />
 
               {/* TEXT — absolutely positioned */}
@@ -137,15 +136,19 @@ const Sidebar = () => {
       <ul className="relative flex flex-col items-start gap-4 border-t border-gray-300 p-3 text-gray-700">
         {otherOptions.map((item) => {
           const isTheme = item.title === "Theme";
+          const path =
+            item.path &&
+            location.pathname ===
+              (isAdminRoute ? `/admin${item.path}` : item.path);
 
           const content = (
             <>
               <item.icon
                 size={20}
-                className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
+                className={`${path ? "text-white" : "text-icon"} shrink-0 transition-colors duration-200`}
               />
               <span
-                className={`absolute left-12 whitespace-nowrap transition-all duration-200 ${
+                className={`${path ? "text-white" : ""} absolute left-12 whitespace-nowrap transition-all duration-200 ${
                   hideSidebar
                     ? "-translate-x-1 opacity-0"
                     : "translate-x-0 opacity-100"
@@ -162,7 +165,9 @@ const Sidebar = () => {
               <li className="w-full" key={item.title}>
                 <button
                   onClick={() => setShowThemeMenu((prev) => !prev)}
-                  className="hover:bg-orange group relative flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
+                  className={
+                    "group relative flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:bg-gray-200/60"
+                  }
                 >
                   {content}
                 </button>
@@ -177,7 +182,7 @@ const Sidebar = () => {
               to={{
                 pathname: isAdminRoute ? `/admin${item?.path}` : item?.path,
               }}
-              className="hover:bg-orange group relative w-full rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
+              className={`${path ? "bg-orange" : "hover:bg-gray-200/60"} group relative w-full rounded-lg px-4 py-3 font-semibold transition-colors duration-200`}
             >
               <li className="flex items-center">{content}</li>
             </Link>

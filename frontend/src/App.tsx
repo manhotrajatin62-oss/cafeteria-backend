@@ -5,7 +5,7 @@ import Home from "./pages/home/Home";
 import Team from "./pages/about us/Team";
 import Dashboard from "./pages/admin/dashboard/Dashboard";
 import NotFound from "./ui/NotFound";
-import PendingOrders from "./pages/admin/orders/PendingOrders";
+import OrdersPage from "./pages/admin/orders/OrdersPage";
 import ProductTable from "./pages/admin/products/ProductTable";
 import CustomerTable from "./pages/admin/customers/CustomerTable";
 import AccountPage from "./pages/account/AccountPage";
@@ -22,7 +22,7 @@ const App = () => {
       {/* ADMIN ROUTES */}
       <Route path="admin">
         <Route index element={<Dashboard />} />
-        <Route path="orders" element={<PendingOrders />} />
+        <Route path="orders" element={<OrdersPage />} />
         <Route path="products" element={<ProductTable />} />
         <Route path="customers" element={<CustomerTable />} />
         <Route path="account" element={<AccountPage />} />
@@ -30,6 +30,7 @@ const App = () => {
 
       <Route path="*" element={<NotFound />} />
     </Route>
+    <Route path="/login" element={<LoginPage/>} />
     </Routes>
   );
 };

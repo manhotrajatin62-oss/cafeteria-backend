@@ -1,0 +1,83 @@
+import type { Order } from "./types";
+import food from "../../../assets/food.jpg";
+
+export const INITIAL_ORDERS: Order[] = [
+  {
+    id: "1",
+    orderNumber: "20235",
+    date: "01-14-2026",
+    table: 20,
+    guests: 4,
+    customer: "Moanees",
+    payment: "Paid",
+    status: "pending",
+    total: 230,
+    items: [
+      { name: "Grill Sandwich", quantity: 2, price: 60, image: food },
+      { name: "Chicken Popeyes", quantity: 3, price: 60, image: food },
+      { name: "Bison Burgers", quantity: 4, price: 250, image: food },
+      { name: "Grill Sandwich", quantity: 2, price: 60, image: food },
+    ],
+  },
+  {
+    id: "2",
+    orderNumber: "20236",
+    date: "01-10-2026",
+    table: 20,
+    guests: 4,
+    customer: "Sarah K.",
+    payment: "Unpaid",
+    status: "pending",
+    total: 230,
+    items: [
+      { name: "Chicken Popeyes", quantity: 2, price: 80, image: food },
+      { name: "Bison Burgers", quantity: 1, price: 150, image: food },
+    ],
+  },
+  {
+    id: "3",
+    orderNumber: "20237",
+    date: "12-28-2025",
+    table: 20,
+    guests: 4,
+    customer: "John D.",
+    payment: "Paid",
+    status: "pending",
+    total: 230,
+    items: [
+      { name: "Grill Sandwich", quantity: 3, price: 90, image: food },
+      { name: "Chicken Popeyes", quantity: 1, price: 40, image: food },
+      { name: "Bison Burgers", quantity: 2, price: 100, image: food },
+    ],
+  },
+  {
+    id: "4",
+    orderNumber: "20238",
+    date: "12-15-2025",
+    table: 20,
+    guests: 4,
+    customer: "Emily R.",
+    payment: "Unpaid",
+    status: "pending",
+    total: 230,
+    items: [
+      { name: "Bison Burgers", quantity: 2, price: 130, image: food },
+      { name: "Grill Sandwich", quantity: 2, price: 100, image: food },
+    ],
+  },
+  {
+    id: "5",
+    orderNumber: "20239",
+    date: "11-30-2025",
+    table: 20,
+    guests: 4,
+    customer: "Alex M.",
+    payment: "Paid",
+    status: "pending",
+    total: 230,
+    items: [
+      { name: "Chicken Popeyes", quantity: 4, price: 160, image: food },
+      { name: "Grill Sandwich", quantity: 1, price: 70, image: food },
+    ],
+  },
+];
