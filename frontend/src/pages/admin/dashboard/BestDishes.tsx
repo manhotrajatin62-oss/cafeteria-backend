@@ -86,7 +86,7 @@ const customStyles = {
       fontWeight: 600,
       fontSize: "14px",
       backgroundColor: "#fff",
-      borderBottom: "1px solid #e5e7eb",
+     borderBottom: "2px solid #fd7d30" 
     },
   },
   rows: {

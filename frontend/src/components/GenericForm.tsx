@@ -242,6 +242,7 @@ export default function GenericForm<T extends BaseRecord>({
                         className={inputClass(key)}
                         placeholder={field.placeholder}
                         type={field.type}
+                        name={field.label}
                         id={field.label}
                         min={field.type === "number" ? "0" : undefined}
                         step={field.type === "number" ? "any" : undefined}

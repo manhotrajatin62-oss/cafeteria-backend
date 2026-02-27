@@ -12,6 +12,8 @@ import {
 import { RiMessageFill } from "react-icons/ri";
 import { Link, useLocation } from "react-router-dom";
 import { MdSpaceDashboard } from "react-icons/md";
+import { useState } from "react";
+import { CiDark, CiLight } from "react-icons/ci";
 
 const sidebarUserData = [
   {
@@ -30,7 +32,7 @@ const sidebarAdminData = [
   {
     icon: MdSpaceDashboard,
     title: "Dashboard",
-    path: "/admin/",
+    path: "/admin",
   },
   {
     icon: FaClipboardList,
@@ -53,21 +55,27 @@ const otherOptions = [
   {
     icon: FaUserAlt,
     title: "Account",
+    path: "/account",
   },
   {
     icon: BsGearFill,
-    title: "Settings",
+    title: "Theme",
   },
 ];
 
 const Sidebar = () => {
   const { hideSidebar, toggleSidebar } = useUser();
 
+  const [showThemeMenu, setShowThemeMenu] = useState(false);
+
   const location = useLocation();
+
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const navItems = isAdminRoute ? sidebarAdminData : sidebarUserData;
 
   return (
     <aside
-      className={`h-dvh overflow-hidden border-r border-gray-300 transition-[width] duration-300 ease-in-out ${hideSidebar ? "w-20" : "w-56"} `}
+      className={`h-dvh border-r border-gray-300 bg-white transition-[width] duration-300 ease-in-out dark:bg-black ${hideSidebar ? "w-20" : "w-56"} `}
     >
       {/* brand logo */}
       <div className="relative flex items-center gap-4 border-b border-gray-300 p-3">
@@ -95,62 +103,116 @@ const Sidebar = () => {
       </div>
 
       {/* navigation links */}
-      <ul className="flex h-[calc(100dvh-12rem)] overflow-y-auto overflow-x-hidden flex-col items-start gap-4 p-3 text-gray-700">
-        {(location.pathname == "/" ? sidebarUserData : sidebarAdminData)?.map(
-          (item) => (
-            <Link
-              key={item.title}
-              to={item.path}
-              className="hover:bg-orange group relative w-full cursor-pointer gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
-            >
-              <li className="flex items-center">
-                {/* ICON — always fixed position */}
-                <item.icon
-                  size={20}
-                  className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
-                />
+      <ul className="flex h-[calc(100dvh-12rem)] flex-col items-start gap-4 overflow-x-hidden overflow-y-auto p-3 text-gray-700">
 
-                {/* TEXT — absolutely positioned */}
-                <span
-                  className={`absolute left-12 whitespace-nowrap transition-all duration-200 ${
-                    hideSidebar
-                      ? "-translate-x-1 opacity-0"
-                      : "translate-x-0 opacity-100"
-                  } `}
-                >
-                  {item.title}
-                </span>
-              </li>
-            </Link>
-          ),
-        )}
+        {navItems?.map((item) => (
+          <Link
+            key={item.title}
+            to={item.path}
+            className="hover:bg-orange group relative w-full cursor-pointer gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
+          >
+            <li className="flex items-center">
+              {/* ICON — always fixed position */}
+              <item.icon
+                size={20}
+                className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
+              />
+
+              {/* TEXT — absolutely positioned */}
+              <span
+                className={`absolute left-12 whitespace-nowrap transition-all duration-200 ${
+                  hideSidebar
+                    ? "-translate-x-1 opacity-0"
+                    : "translate-x-0 opacity-100"
+                } `}
+              >
+                {item.title}
+              </span>
+            </li>
+          </Link>
+        ))}
       </ul>
 
       {/* account and Settings */}
-      <ul className="flex flex-col items-start border-t border-gray-300 gap-4 p-3 text-gray-700">
-        {otherOptions?.map((item) => (
-          <li
-            key={item.title}
-            className="hover:bg-orange group relative flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
-          >
-            {/* ICON — always fixed position */}
-            <item.icon
-              size={20}
-              className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
-            />
+      <ul className="relative flex flex-col items-start gap-4 border-t border-gray-300 p-3 text-gray-700">
+        {otherOptions.map((item) => {
+          const isTheme = item.title === "Theme";
 
-            {/* TEXT — absolutely positioned */}
-            <span
-              className={`absolute left-12 whitespace-nowrap transition-all duration-200 ${
-                hideSidebar
-                  ? "-translate-x-1 opacity-0"
-                  : "translate-x-0 opacity-100"
-              } `}
+          const content = (
+            <>
+              <item.icon
+                size={20}
+                className="text-icon shrink-0 transition-colors duration-200 group-hover:text-white"
+              />
+              <span
+                className={`absolute left-12 whitespace-nowrap transition-all duration-200 ${
+                  hideSidebar
+                    ? "-translate-x-1 opacity-0"
+                    : "translate-x-0 opacity-100"
+                }`}
+              >
+                {item.title}
+              </span>
+            </>
+          );
+
+          // toggle theme button
+          if (isTheme) {
+            return (
+              <li className="w-full" key={item.title}>
+                <button
+                  onClick={() => setShowThemeMenu((prev) => !prev)}
+                  className="hover:bg-orange group relative flex w-full cursor-pointer items-center gap-3 rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
+                >
+                  {content}
+                </button>
+              </li>
+            );
+          }
+
+          // account button
+          return (
+            <Link
+              key={item.title}
+              to={{
+                pathname: isAdminRoute ? `/admin${item?.path}` : item?.path,
+              }}
+              className="hover:bg-orange group relative w-full rounded-lg px-4 py-3 font-semibold transition-colors duration-200 hover:text-white"
             >
-              {item.title}
-            </span>
-          </li>
-        ))}
+              <li className="flex items-center">{content}</li>
+            </Link>
+          );
+        })}
+
+        <div
+          className={`${showThemeMenu ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"} absolute -top-15 -right-40 z-99 h-45 w-45 rounded-lg border border-gray-300 bg-white p-4 transition-opacity duration-150 ease-in`}
+        >
+          <h1 className="text-sm">Choose Theme</h1>
+
+          <div className="mt-4 flex w-full flex-col items-start gap-2">
+            <button
+              onClick={() => {
+                document.documentElement.classList.remove("dark");
+                setShowThemeMenu(false);
+              }}
+              className="flex w-full cursor-pointer items-center gap-3 p-2 hover:bg-gray-100"
+            >
+              <CiLight size={25} /> Light
+            </button>
+
+            <hr className="w-full text-gray-300" />
+
+            <button
+              onClick={() => {
+                document.documentElement.classList.add("dark");
+                setShowThemeMenu(false);
+              }}
+              className="flex w-full cursor-pointer items-center gap-3 p-2 hover:bg-gray-100"
+            >
+              <CiDark size={25} /> Dark
+            </button>
+          </div>
+        </div>
       </ul>
     </aside>
   );

@@ -18,6 +18,8 @@ const Navbar = () => {
       </h1>
      {location.pathname == "/" && <div className="flex w-120 items-center justify-between gap-2 rounded-4xl border border-gray-300 px-6">
         <input
+        name="search"
+        id="search"
           type="search"
           className="h-10 w-full text-sm outline-0"
           placeholder="Search Anything Here"

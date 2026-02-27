@@ -17,7 +17,7 @@ const ProductCard = () => {
         <span className="text-orange">Rs. 60</span>
       </div>
 
-      <button className="bg-orange flex cursor-pointer items-center gap-2 self-end rounded-lg px-4 py-2 text-sm text-white hover:bg-[#ff6e14]">
+      <button className="bg-orange flex cursor-pointer items-center gap-2 self-end rounded-lg px-4 py-2 text-sm text-white hover:bg-dark-orange">
         <FaPlus /> Add Product
       </button>
     </section>

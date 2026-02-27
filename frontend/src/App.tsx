@@ -8,20 +8,28 @@ import NotFound from "./ui/NotFound";
 import PendingOrders from "./pages/admin/orders/PendingOrders";
 import ProductTable from "./pages/admin/products/ProductTable";
 import CustomerTable from "./pages/admin/customers/CustomerTable";
+import AccountPage from "./pages/account/AccountPage";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-        <Route path="/" element={<Home/>} />
-        <Route path="/about" element={<Team/>} />
-        <Route path="/admin" element={<Dashboard/>} />
-        <Route path="/admin/orders" element={<PendingOrders/>} />
-        <Route path="/admin/products" element={<ProductTable/>} />
-        <Route path="/admin/customers" element={<CustomerTable/>} />
-        <Route path="*" element={<NotFound/>} />
+      {/* USER ROUTES */}
+      <Route index element={<Home />} />
+      <Route path="about" element={<Team />} />
+      <Route path="account" element={<AccountPage />} />
+
+      {/* ADMIN ROUTES */}
+      <Route path="admin">
+        <Route index element={<Dashboard />} />
+        <Route path="orders" element={<PendingOrders />} />
+        <Route path="products" element={<ProductTable />} />
+        <Route path="customers" element={<CustomerTable />} />
+        <Route path="account" element={<AccountPage />} />
       </Route>
-      <Route path="/login" element={<LoginPage />} />
+
+      <Route path="*" element={<NotFound />} />
+    </Route>
     </Routes>
   );
 };

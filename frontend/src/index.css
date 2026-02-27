@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @font-face {
   font-family: Inter;
   src: url(./assets/Inter-VariableFont_opsz,wght.ttf);
@@ -14,11 +16,13 @@
 
 @layer components {
   .form-input {
-    @apply w-90 flex items-center gap-3 rounded-md border px-3
-    text-sm focus:border-orange transition-[border] duration-150 ease-in;
+    @apply w-90 transition-[border] flex items-center gap-3 rounded-md border px-3
+    text-sm duration-150 ease-in focus:border-orange;
   }
-  .form-box{
-    @apply absolute top-[50%] flex translate-[-50%] flex-col items-start transition-all duration-150 ease-in
+  
+  .form-box {
+    @apply top-[50%] translate-[-50%] absolute flex flex-col items-start
+    transition-all duration-150 ease-in;
   }
 }
 
@@ -41,20 +45,23 @@ input[type='number'] {
 }
 
 .swiper {
-  --swiper-pagination-color: #fd7d30;           /* active dot color */
-  --swiper-pagination-bullet-inactive-color: #d1d5db; /* inactive color */
-  --swiper-pagination-bullet-size: 12px;        /* size */
+  --swiper-pagination-color: #fd7d30;
+  /* active dot color */
+  --swiper-pagination-bullet-inactive-color: #d1d5db;
+  /* inactive color */
+  --swiper-pagination-bullet-size: 12px;
+  /* size */
   --swiper-pagination-bullet-opacity: 1;
   --swiper-pagination-bullet-inactive-opacity: 0.5;
 }
 
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   appearance: none;
   width: 5px;
   height: 5px;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   background-color: var(--color-orange);
   width: 5px;
   height: 5px;

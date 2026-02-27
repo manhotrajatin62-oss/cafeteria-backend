@@ -177,7 +177,7 @@ export default function GenericTable<T extends BaseRecord>({
           <h1 className="text-xl font-bold text-gray-800">{title}</h1>
           <button
             onClick={() => setView("add")}
-            className="cursor-pointer rounded-lg bg-orange-400 px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-orange-500 active:scale-95"
+            className="cursor-pointer rounded-lg bg-orange px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-dark-orange active:scale-95"
           >
             {addLabel}
           </button>
