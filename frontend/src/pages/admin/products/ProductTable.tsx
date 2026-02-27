@@ -6,6 +6,16 @@ import food from "../../../assets/food.jpg";
 
 const productColumns: TableColumn<Product>[] = [
   {
+      name: "S No.",
+      minWidth: "90px",
+      grow: 0,
+      sortable: true,
+      center: true,
+      cell: (_row: Product, index: number) => (
+        <span className="text-sm font-semibold">{index + 1}.</span>
+      ),
+    },
+  {
     name: "Product",
     cell: (row) => (
       <div className="flex items-center gap-3 py-2">
@@ -21,11 +31,13 @@ const productColumns: TableColumn<Product>[] = [
       </div>
     ),
     sortable: true,
-    grow: 1.5,
+    grow: 1,
+    minWidth: "200px",
     sortFunction: (a, b) => a.name.localeCompare(b.name),
   },
   {
     name: "Status",
+    minWidth: "150px",
     cell: (row) => (
       <span
         className={`text-sm font-semibold ${row.status === "In Stock" ? "text-green-500" : "text-red-500"}`}
@@ -38,6 +50,7 @@ const productColumns: TableColumn<Product>[] = [
   },
   {
     name: "Product ID",
+    minWidth: "150px",
     selector: (row) => row.productId,
     sortable: true,
     center: true,
@@ -47,6 +60,7 @@ const productColumns: TableColumn<Product>[] = [
   },
   {
     name: "Quantity",
+     minWidth: "150px",
     selector: (row) => row.quantity,
     sortable: true,
     center: true,
@@ -54,6 +68,7 @@ const productColumns: TableColumn<Product>[] = [
   },
   {
     name: "Price",
+     minWidth: "150px",
     selector: (row) => row.price,
     sortable: true,
     center: true,

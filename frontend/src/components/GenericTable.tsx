@@ -66,7 +66,7 @@ function ActionButtons<T extends BaseRecord>({
     <div className="flex items-center gap-6">
       <button
         onClick={() => onEdit(row)}
-        className="flex items-center gap-1 text-sm cursor-pointer font-medium text-green-500 transition hover:text-green-600"
+        className="flex cursor-pointer items-center gap-1 text-sm font-medium text-green-500 transition hover:text-green-600"
       >
         <MdModeEdit size={18} />
         Edit
@@ -74,7 +74,7 @@ function ActionButtons<T extends BaseRecord>({
 
       <button
         onClick={() => onDelete(row)}
-        className="flex items-center gap-1 text-sm cursor-pointer font-medium text-orange transition hover:text-dark-orange"
+        className="text-orange hover:text-dark-orange flex cursor-pointer items-center gap-1 text-sm font-medium transition"
       >
         <FaTrash size={15} />
         Delete
@@ -127,6 +127,7 @@ export default function GenericTable<T extends BaseRecord>({
     ...columns,
     {
       name: "Action",
+      minWidth: "200px",
       cell: (row) => (
         <ActionButtons
           row={row}
@@ -138,7 +139,7 @@ export default function GenericTable<T extends BaseRecord>({
         />
       ),
       ignoreRowClick: true,
-      center : true
+      center: true,
     },
   ];
 
@@ -177,7 +178,7 @@ export default function GenericTable<T extends BaseRecord>({
           <h1 className="text-xl font-bold text-gray-800">{title}</h1>
           <button
             onClick={() => setView("add")}
-            className="cursor-pointer rounded-lg bg-orange px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-dark-orange active:scale-95"
+            className="bg-orange hover:bg-dark-orange cursor-pointer rounded-lg px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95"
           >
             {addLabel}
           </button>

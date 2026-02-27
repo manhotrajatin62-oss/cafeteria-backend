@@ -14,10 +14,14 @@ export interface Product extends BaseRecord {
 }
 
 export interface Customer extends BaseRecord {
-  orders: number;
-  spent: number;
+  employeeId: string;
+  email: string;
+  pendingBill: number;
+  wallet: number;
   gender: string;
   address: string;
+  orders?: number;
+  spent?: number;
 }
 
 export interface FieldConfig<T extends BaseRecord> {
@@ -26,6 +30,17 @@ export interface FieldConfig<T extends BaseRecord> {
   placeholder: string;
   type: "text" | "number" | "select";
   options?: string[];
-  required?: boolean,
+  required?: boolean;
   validate?: (value: string) => string | undefined | null;
+}
+
+export type View = "table" | "add" | "edit";
+
+export interface WalletRecord {
+  id: number;
+  employeeName: string;
+  payment: number;
+  walletBalance: number;
+  date: string;
+  time: string;
 }
