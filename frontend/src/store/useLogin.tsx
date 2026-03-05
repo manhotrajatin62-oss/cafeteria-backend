@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { requestOtp, loginWithOtp, registerUser } from "../api/authApi";
 
 type Name = {
   value: string;
@@ -37,7 +38,7 @@ type LoginStore = {
   setShowOtpPage: (value: boolean) => void;
   setOtp: (value: string) => void;
   startOtpTimer: () => void;
-  resendOtp: () => void;
+  resendOtp: () => Promise<void>;
 
   setHoverNameInput: (value: boolean) => void;
   setHoverEmailInput: (value: boolean) => void;
@@ -49,6 +50,7 @@ type LoginStore = {
   handleEmailChange: (e: any) => void;
 
   handleFormSubmit: (e: any) => Promise<void>;
+  handleSubmitOtp: (e: any, navigate: any) => Promise<void>;
 };
 
 export const useLogin = create<LoginStore>((set, get) => ({
@@ -126,19 +128,26 @@ export const useLogin = create<LoginStore>((set, get) => ({
     set({ otpInterval: interval });
   },
 
-  resendOtp: () => {
-    get().startOtpTimer();
+  resendOtp: async () => {
+    const state = useLogin.getState();
+
+    try {
+      set({ showLoader: true });
+      await requestOtp(state.email.value);
+      set({ showLoader: false });
+      get().startOtpTimer();
+    } catch (error: any) {
+      set({ showLoader: false });
+      console.error("API Error:", error.response?.data || error.message);
+    }
   },
 
   goToOtpPage: () => {
-    set({ showLoader: true });
-    setTimeout(() => {
-      set({ showLoader: false, showOtpPage: true });
-    }, 1000);
+    set({ showOtpPage: true });
   },
 
   handleNameChange: (e) => {
-    const nameRegex = /^[A-Za-z]{2,}(?:\s[A-Za-z]+)?$/;
+    const nameRegex = /^[A-Za-z]{3,}(?:[ '-][A-Za-z]+)*$/;
     const name = e.target.value;
 
     if (!name.trim()) {
@@ -174,7 +183,7 @@ export const useLogin = create<LoginStore>((set, get) => ({
   },
 
   handleEmailChange: (e) => {
-    const emailRegex = /^[A-Za-z0-9.]+@[A-Za-z0-9-]+\.(com|gov\.in|in)$/;
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     const value = e.target.value;
 
     if (!value.trim()) {
@@ -229,7 +238,15 @@ export const useLogin = create<LoginStore>((set, get) => ({
 
       if (!state.email.success) return;
 
-      state.goToOtpPage();
+      try {
+        set({ showLoader: true });
+        await requestOtp(state.email.value);
+        set({ showLoader: false });
+        state.goToOtpPage();
+      } catch (error: any) {
+         set({ showLoader: false });
+        console.error("API Error:", error.response?.data || error.message);
+      }
 
       return;
     }
@@ -261,26 +278,51 @@ export const useLogin = create<LoginStore>((set, get) => ({
 
     if (!updatedState.email.success || !updatedState.name.success) return;
 
-    set({ showLoader: true });
+    try {
+      set({ showLoader: true });
+      await registerUser(updatedState.name.value, updatedState.email.value);
+      setTimeout(() => {
+        set({ showLoader: false, showLogin: true });
+        set({
+          name: {
+            value: "",
+            success: false,
+            message: "",
+            status: "idle",
+          },
+          email: {
+            ...state.email,
+            success: true,
+            message: "",
+            status: "idle",
+          },
+        });
+      }, 1000);
+    } catch (error: any) {
+      console.error("API Error:", error.response?.data || error.message);
+      setTimeout(() => {
+        set({ showLoader: false, showLogin: false });
+      }, 500);
+    }
+  },
 
-    setTimeout(() => {
-      set({ showLoader: false, showLogin: true });
-       set({
-      name: {
-        value: "",
-        success: false,
-        message: "",
-        status: "idle",
-      },
-      email: {
-        ...state.email,
-        success: true,
-        message: "",
-        status: "idle",
-      },
-    });
-    }, 1000);
+  handleSubmitOtp: async (e, navigate) => {
+    e.preventDefault();
 
-   
+    const state = useLogin.getState();
+
+    try {
+      set({ showLoader: true });
+      const res = await loginWithOtp(state.email.value, state.otp);
+
+      set({ showLoader: false });
+      const { data } = res.data;
+
+      localStorage.setItem("user", JSON.stringify({token : data.token, ...data.user}));
+      navigate("/");
+    } catch (error: any) {
+       set({ showLoader: false });
+      console.error("API Error:", error.response?.data || error.message);
+    }
   },
 }));

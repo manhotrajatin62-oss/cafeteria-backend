@@ -2,6 +2,7 @@ import { Role } from "../models/User.ts";
 import { MSG } from "../constants/messages.ts";
 import { authRepo } from "../repos/auth.repo.ts";
 import {generateOtp} from "../utils/generateOtp.ts"
+import { sendOtpMail } from "./mail.service.ts";
 
 const register = async (data: any) => {
   const { name, email } = data;
@@ -65,6 +66,8 @@ const requestOtp = async (data:any)=> {
   user.otpExpiresAt = new Date(Date.now() + 5 * 60 * 1000);
 
   await user.save();
+  // await sendOtpMail(email, otp)
+  console.log("otp", otp)
 
   return user;
 }

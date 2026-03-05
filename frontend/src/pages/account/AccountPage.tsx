@@ -3,7 +3,8 @@ import AccountTables from "./AccountTables";
 import { FiUser } from "react-icons/fi";
 import { MdBarChart, MdDelete } from "react-icons/md";
 import { IoIosExit, IoIosWallet } from "react-icons/io";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useLogin } from "../../store/useLogin";
 
 export interface OrderRecord {
   id: number;
@@ -24,12 +25,15 @@ export interface WalletRecord {
 }
 
 export default function AccountPage() {
+  const { setShowLogin, setOtp, setShowOtpPage } = useLogin();
+
   // states
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const navigate = useNavigate();
   const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin")
+  const isAdmin = location.pathname.startsWith("/admin");
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -46,13 +50,23 @@ export default function AccountPage() {
     setProfileImage(null);
   }
 
+  function handleLogout() {
+    localStorage.clear();
+    navigate("/login");
+    setShowLogin(true);
+    setShowOtpPage(false);
+    setOtp("");
+  }
+
   return (
     <div className="min-h-screen">
-
       <div className="flex w-full items-center justify-between px-8 pt-4">
         <h1 className="text-xl font-bold text-gray-800">Account Details</h1>
 
-        <button className="bg-orange flex items-center gap-3 hover:bg-dark-orange cursor-pointer rounded-lg px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95">
+        <button
+          onClick={handleLogout}
+          className="bg-orange hover:bg-dark-orange flex cursor-pointer items-center gap-3 rounded-lg px-5 py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95"
+        >
           <IoIosExit size={25} /> Logout
         </button>
       </div>
@@ -126,36 +140,37 @@ export default function AccountPage() {
             </div>
 
             {/* pending bill, wallet */}
-           {!isAdmin && <div className="mt-4 grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-4 rounded-lg border border-gray-300 p-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black">
-                  <MdBarChart size={25} color="white" />
+            {!isAdmin && (
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-4 rounded-lg border border-gray-300 p-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black">
+                    <MdBarChart size={25} color="white" />
+                  </div>
+
+                  <div>
+                    <p className="mb-1 text-xs text-gray-400">Pending Bill</p>
+                    <p className="font-semibold text-gray-800">₹15.00</p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="mb-1 text-xs text-gray-400">Pending Bill</p>
-                  <p className="font-semibold text-gray-800">₹15.00</p>
+                <div className="flex items-center gap-4 rounded-lg border border-gray-300 p-4">
+                  <div className="bg-orange flex h-10 w-10 items-center justify-center rounded-full">
+                    <IoIosWallet size={22} color="white" />
+                  </div>
+
+                  <div>
+                    <p className="mb-1 text-xs text-gray-400">Wallet</p>
+                    <p className="font-semibold text-gray-800">₹0.00</p>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex items-center gap-4 rounded-lg border border-gray-300 p-4">
-                <div className="bg-orange flex h-10 w-10 items-center justify-center rounded-full">
-                  <IoIosWallet size={22} color="white" />
-                </div>
-
-                <div>
-                  <p className="mb-1 text-xs text-gray-400">Wallet</p>
-                  <p className="font-semibold text-gray-800">₹0.00</p>
-                </div>
-              </div>
-            </div>}
-
+            )}
           </div>
         </div>
       </div>
 
       {/* table component */}
-     {!isAdmin && <AccountTables />}
+      {!isAdmin && <AccountTables />}
     </div>
   );
 }

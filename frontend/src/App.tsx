@@ -10,29 +10,41 @@ import ProductTable from "./pages/admin/products/ProductTable";
 import CustomerTable from "./pages/admin/customers/CustomerTable";
 import AccountPage from "./pages/account/AccountPage";
 import MenuPage from "./pages/admin/menu/MenuPage";
+import AdminRoutes from "./routes/AdminRoutes";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import PublicRoutes from "./routes/PublicRoutes";
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<AppLayout />}>
-      {/* USER ROUTES */}
-      <Route index element={<Home />} />
-      <Route path="about" element={<Team />} />
-      <Route path="account" element={<AccountPage />} />
-
-      {/* ADMIN ROUTES */}
-      <Route path="admin">
-        <Route index element={<Dashboard />} />
-        <Route path="orders" element={<OrdersPage />} />
-        <Route path="products" element={<ProductTable />} />
-        <Route path="customers" element={<CustomerTable />} />
-        <Route path="account" element={<AccountPage />} />
-        <Route path="menu" element={<MenuPage />} />
+      {/* PUBLIC ROUTES */}
+      <Route element={<PublicRoutes />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
 
-      <Route path="*" element={<NotFound />} />
-    </Route>
-    <Route path="/login" element={<LoginPage/>} />
+      <Route path="/" element={<AppLayout />}>
+        {/* USER ROUTES */}
+        <Route element={<ProtectedRoutes />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<Team />} />
+          <Route path="account" element={<AccountPage />} />
+        </Route>
+
+        {/* ADMIN ROUTES */}
+        <Route element={<AdminRoutes />}>
+          <Route path="admin">
+            <Route index element={<Dashboard />} />
+            <Route path="orders" element={<OrdersPage />} />
+            <Route path="products" element={<ProductTable />} />
+            <Route path="customers" element={<CustomerTable />} />
+            <Route path="account" element={<AccountPage />} />
+            <Route path="menu" element={<MenuPage />} />
+          </Route>
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
+      </Route>
     </Routes>
   );
 };
