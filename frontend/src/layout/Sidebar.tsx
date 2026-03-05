@@ -14,6 +14,7 @@ import { Link, useLocation } from "react-router-dom";
 import { MdSpaceDashboard } from "react-icons/md";
 import { useState } from "react";
 import { CiDark, CiLight } from "react-icons/ci";
+import { GiMeal } from "react-icons/gi";
 
 const sidebarUserData = [
   {
@@ -43,6 +44,11 @@ const sidebarAdminData = [
     icon: FaHamburger,
     title: "Products",
     path: "/admin/products",
+  },
+  {
+    icon: GiMeal,
+    title: "Menu",
+    path: "/admin/menu",
   },
   {
     icon: FaUsers,

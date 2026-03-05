@@ -31,7 +31,7 @@ export interface FieldConfig<T extends BaseRecord> {
   type: "text" | "number" | "select";
   options?: string[];
   required?: boolean;
-  validate?: (value: string) => string | undefined | null;
+  validate?: (value: string, formState?: Record<string, string>) => string | undefined;
 }
 
 export type View = "table" | "add" | "edit";

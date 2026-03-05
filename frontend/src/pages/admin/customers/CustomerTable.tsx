@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { Customer, FieldConfig, View, WalletRecord } from "../types.ts";
 import { INITIAL_CUSTOMERS, WALLET_DATA } from "../data.ts";
@@ -255,8 +256,30 @@ export default function CustomerTable() {
     },
   ];
 
-  // crud operations
+  function findConflict(data: Omit<Customer, "id">, excludeId?: number): string | null {
+    const inName  = (data.name  ?? "").toLowerCase().trim();
+    const inEmail = (data.email ?? "").toLowerCase().trim();
+    for (const row of rows) {
+      if (excludeId !== undefined && row.id === excludeId) continue;
+      if (inName  !== "" && row.name.toLowerCase().trim()  === inName)  return "name";
+      if (inEmail !== "" && row.email.toLowerCase().trim() === inEmail) return "email";
+    }
+    return null;
+  }
+
   function handleAddSubmit(data: Omit<Customer, "id">) {
+    const conflict = findConflict(data);
+    if (conflict) {
+      toast.error(
+        `A customer with this ${conflict} already exists.`,
+        {
+          duration: 3500,
+          style: { background: "#fff", color: "#1f2937", border: "1px solid #fca5a5" },
+          iconTheme: { primary: "#ef4444", secondary: "#fff" },
+        },
+      );
+      return;
+    }
     const newId = Math.max(0, ...rows.map((r) => r.id)) + 1;
     setRows((prev) => [...prev, { ...data, id: newId } as Customer]);
     setView("table");
@@ -264,6 +287,18 @@ export default function CustomerTable() {
 
   function handleEditSubmit(data: Omit<Customer, "id">) {
     if (!editTarget) return;
+    const conflict = findConflict(data, editTarget.id);
+    if (conflict) {
+      toast.error(
+        `Another customer with this ${conflict} already exists.`,
+        {
+          duration: 3500,
+          style: { background: "#fff", color: "#1f2937", border: "1px solid #fca5a5" },
+          iconTheme: { primary: "#ef4444", secondary: "#fff" },
+        },
+      );
+      return;
+    }
     setRows((prev) =>
       prev.map((r) =>
         r.id === editTarget.id ? { ...data, id: editTarget.id } : r,
@@ -299,6 +334,7 @@ export default function CustomerTable() {
   if (view === "add") {
     return (
       <div className="min-h-screen">
+        <Toaster position="top-right" />
         <div>
           <GenericForm<Customer>
             title="Add Customer"
@@ -316,6 +352,7 @@ export default function CustomerTable() {
   if (view === "edit" && editTarget) {
     return (
       <div className="min-h-screen">
+        <Toaster position="top-right" />
         <div>
           <GenericForm<Customer>
             title="Edit Customer"
@@ -335,6 +372,7 @@ export default function CustomerTable() {
 
   return (
     <div className="min-h-screen">
+      <Toaster position="top-right" />
       <div className="flex items-center justify-between px-6 pt-6 pb-4">
 
         <h1 className="text-xl font-bold text-gray-800">Customers</h1>

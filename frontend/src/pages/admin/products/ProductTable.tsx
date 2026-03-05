@@ -6,15 +6,15 @@ import food from "../../../assets/food.jpg";
 
 const productColumns: TableColumn<Product>[] = [
   {
-      name: "S No.",
-      minWidth: "90px",
-      grow: 0,
-      sortable: true,
-      center: true,
-      cell: (_row: Product, index: number) => (
-        <span className="text-sm font-semibold">{index + 1}.</span>
-      ),
-    },
+    name: "S No.",
+    minWidth: "90px",
+    grow: 0,
+    sortable: true,
+    center: true,
+    cell: (_row: Product, index: number) => (
+      <span className="text-sm font-semibold">{index + 1}.</span>
+    ),
+  },
   {
     name: "Product",
     cell: (row) => (
@@ -37,7 +37,7 @@ const productColumns: TableColumn<Product>[] = [
   },
   {
     name: "Status",
-    minWidth: "150px",
+    minWidth: "110px",
     cell: (row) => (
       <span
         className={`text-sm font-semibold ${row.status === "In Stock" ? "text-green-500" : "text-red-500"}`}
@@ -46,11 +46,11 @@ const productColumns: TableColumn<Product>[] = [
       </span>
     ),
     sortable: true,
-    center: true
+    center: true,
   },
   {
     name: "Product ID",
-    minWidth: "150px",
+    minWidth: "110px",
     selector: (row) => row.productId,
     sortable: true,
     center: true,
@@ -60,15 +60,17 @@ const productColumns: TableColumn<Product>[] = [
   },
   {
     name: "Quantity",
-     minWidth: "150px",
+    minWidth: "100px",
     selector: (row) => row.quantity,
     sortable: true,
     center: true,
-    cell: (row) => <span className="text-sm font-semibold text-black">{row.quantity}</span>,
+    cell: (row) => (
+      <span className="text-sm font-semibold text-black">{row.quantity}</span>
+    ),
   },
   {
     name: "Price",
-     minWidth: "150px",
+    minWidth: "100px",
     selector: (row) => row.price,
     sortable: true,
     center: true,
@@ -121,8 +123,26 @@ const productFields: FieldConfig<Product>[] = [
   {
     key: "quantity",
     label: "Quantity / Stock",
-    placeholder: "Enter quantity",
+    placeholder: "Enter quantity (1-50)",
     type: "number",
+    required: false,
+    validate: (value: string, formState?: Record<string, string>) => {
+      const n = Number(value);
+      const status = formState?.status;
+
+      if (value.trim() === "") return "Quantity is required.";
+
+      if (status === "Out of Stock") {
+        if (n !== 0) return "Out of Stock items must have quantity 0.";
+        return undefined;
+      }
+
+      if (Number.isNaN(n) || n <= 0)
+        return "Quantity must be between 1 and 50.";
+      if (n > 50) return "Quantity cannot exceed 50.";
+
+      return undefined;
+    },
   },
 ];
 
@@ -136,6 +156,7 @@ export default function ProductTable() {
       columns={productColumns}
       fields={productFields}
       defaultImage={food}
+      duplicateKeys={["name", "productId"]}
     />
   );
 }

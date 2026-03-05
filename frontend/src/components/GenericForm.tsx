@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
 import BackButton from "../ui/BackButton.tsx";
 import { BiImageAdd } from "react-icons/bi";
@@ -20,6 +20,7 @@ export default function GenericForm<T extends BaseRecord>({
   onSubmit,
   onBack,
 }: GenericFormProps<T>) {
+
   // states
   const [formState, setFormState] = useState<Record<string, string>>(() => {
     const state: Record<string, string> = {};
@@ -40,6 +41,11 @@ export default function GenericForm<T extends BaseRecord>({
   const [submitAttempted, setSubmitAttempted] = useState(false);
 
   const isEditMode = !!initial;
+
+  const hasStatusField = fields.some((f) => f.key === "status");
+  const hasQuantityField = fields.some((f) => f.key === "quantity");
+  const isOutOfStock = formState["status"] === "Out of Stock";
+  const quantityIsLocked = hasStatusField && hasQuantityField && isOutOfStock;
 
   // check if any form value is changed
   function isFormChanged(): boolean {
@@ -74,13 +80,26 @@ export default function GenericForm<T extends BaseRecord>({
 
     if (field.type === "number" && value.trim() !== "") {
       const num = Number.parseFloat(value);
-      if (Number.isNaN(num) || num <= 0) {
-        return `${field.label.replace(" :", "").replace(":", "").trim()} must be greater than 0`;
+      if ((field.key as string) === "quantity") {
+        const isOutOfStock = formState["status"] === "Out of Stock";
+
+        if (isOutOfStock) {
+          if (num !== 0) return "Out of Stock items must have quantity 0.";
+        } else {
+          if (Number.isNaN(num) || num <= 0) {
+            return "Quantity must be between 1 and 50.";
+          }
+          if (num > 50) return "Quantity cannot exceed 50.";
+        }
+      } else {
+        if (Number.isNaN(num) || num <= 0) {
+          return `${field.label.replace(" :", "").replace(":", "").trim()} must be greater than 0`;
+        }
       }
     }
 
     if (field.validate) {
-      const customError = field.validate(value);
+      const customError = field.validate(value, formState);
       if (customError) return customError;
     }
 
@@ -114,6 +133,22 @@ export default function GenericForm<T extends BaseRecord>({
 
   function handleChange(field: FieldConfig<T>, value: string) {
     const key = field.key as string;
+
+    if (key === "status" && hasQuantityField) {
+      if (value === "Out of Stock") {
+        setFormState((prev) => ({ ...prev, [key]: value, quantity: "0" }));
+        setErrors((prev) => {
+          const next = { ...prev };
+          delete next["quantity"];
+          return next;
+        });
+        return;
+      }
+
+      setFormState((prev) => ({ ...prev, [key]: value }));
+      return;
+    }
+
     setFormState((prev) => ({ ...prev, [key]: value }));
 
     if (touched[key] || submitAttempted) {
@@ -127,7 +162,7 @@ export default function GenericForm<T extends BaseRecord>({
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: any) {
     e.preventDefault();
 
     setSubmitAttempted(true);
@@ -238,18 +273,53 @@ export default function GenericForm<T extends BaseRecord>({
                         ))}
                       </select>
                     ) : (
-                      <input
-                        className={inputClass(key)}
-                        placeholder={field.placeholder}
-                        type={field.type}
-                        name={field.label}
-                        id={field.label}
-                        min={field.type === "number" ? "0" : undefined}
-                        step={field.type === "number" ? "any" : undefined}
-                        value={formState[key] ?? ""}
-                        onChange={(e) => handleChange(field, e.target.value)}
-                        onBlur={(e) => handleBlur(field, e.target.value)}
-                      />
+                      (() => {
+                        const isQtyLocked =
+                          key === "quantity" && quantityIsLocked;
+                        return (
+                          <input
+                            className={
+                              isQtyLocked
+                                ? "w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-2.5 text-sm text-gray-400 focus:outline-none"
+                                : inputClass(key)
+                            }
+                            placeholder={field.placeholder}
+                            type={field.type}
+                            name={field.label}
+                            id={field.label}
+                            disabled={isQtyLocked}
+                            min={
+                              key === "quantity"
+                                ? isQtyLocked
+                                  ? "0"
+                                  : "1"
+                                : field.type === "number"
+                                  ? "0"
+                                  : undefined
+                            }
+                            max={
+                              key === "quantity"
+                                ? isQtyLocked
+                                  ? "0"
+                                  : "50"
+                                : undefined
+                            }
+                            step={field.type === "number" ? "any" : undefined}
+                            value={isQtyLocked ? "0" : (formState[key] ?? "")}
+                            onChange={(e) =>
+                              handleChange(field, e.target.value)
+                            }
+                            onBlur={(e) => handleBlur(field, e.target.value)}
+                          />
+                        );
+                      })()
+                    )}
+
+                    {/* Out of Stock hint below the quantity field */}
+                    {key === "quantity" && quantityIsLocked && (
+                      <p className="text-orange mt-1 text-xs font-medium">
+                        Out of Stock — quantity is locked to 0.
+                      </p>
                     )}
 
                     {shouldShowError(key) && (
@@ -296,8 +366,8 @@ export default function GenericForm<T extends BaseRecord>({
                 disabled={isEditMode && !isFormChanged()}
                 className={`${
                   isEditMode && !isFormChanged()
-                    ? "cursor-not-allowed bg-light-orange"
-                    : "bg-orange hover:bg-dark-orange active:scale-95 cursor-pointer"
+                    ? "bg-light-orange cursor-not-allowed"
+                    : "bg-orange hover:bg-dark-orange cursor-pointer active:scale-95"
                 } rounded-lg px-10 py-3 text-sm font-semibold text-white shadow-md transition-all duration-150`}
               >
                 Save {title.replace("Add ", "").replace("Edit ", "")}

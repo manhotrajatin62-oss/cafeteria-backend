@@ -41,7 +41,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     name: "Grill Sandwich",
     status: "Out of Stock",
     productId: "66758941",
-    quantity: 50,
+    quantity: 0,
     price: 20,
     unit: "piece",
     category: "Sandwich",

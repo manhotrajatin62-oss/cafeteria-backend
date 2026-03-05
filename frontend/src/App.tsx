@@ -9,6 +9,7 @@ import OrdersPage from "./pages/admin/orders/OrdersPage";
 import ProductTable from "./pages/admin/products/ProductTable";
 import CustomerTable from "./pages/admin/customers/CustomerTable";
 import AccountPage from "./pages/account/AccountPage";
+import MenuPage from "./pages/admin/menu/MenuPage";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="products" element={<ProductTable />} />
         <Route path="customers" element={<CustomerTable />} />
         <Route path="account" element={<AccountPage />} />
+        <Route path="menu" element={<MenuPage />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
