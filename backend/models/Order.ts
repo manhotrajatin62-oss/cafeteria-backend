@@ -37,6 +37,12 @@ const orderSchema = new mongoose.Schema(
       default: "paid"
     },
 
+    orderStatus: {
+      type: String,
+      enum: ["pending", "confirmed", "rejected"],
+      default: "pending"
+    },
+
     placedByAdmin: {
       type: Boolean,
       default: false

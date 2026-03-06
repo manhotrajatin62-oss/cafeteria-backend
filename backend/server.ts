@@ -7,6 +7,7 @@ import helmet from "helmet";
 
 import authRoutes from "./routes/auth.routes.ts";
 import cartRoutes from "./routes/cart.routes.ts";
+import orderRoutes from "./routes/order.routes.ts";
 import itemRoutes from "./routes/item.routes.ts";
 import walletRoutes from "./routes/wallet.routes.ts";
 import categoryRoutes from "./routes/category.routes.ts";
@@ -27,6 +28,7 @@ app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api", orderRoutes)
 app.use("/api/items", itemRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/wallet", walletRoutes);

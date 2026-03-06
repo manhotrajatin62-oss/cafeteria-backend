@@ -41,21 +41,3 @@ export const deleteCartItem = async (req: AuthRequest, res: any) => {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
 };
-
-export const checkout = async (req: any, res: any) => {
-  try {
-    await cartService.checkout(req.user.id);
-    sendResponse(res, STATUS.OK, MSG.ORDER_PLACED);
-  } catch (err:any) {
-    sendResponse(res, STATUS.BAD_REQUEST, err.message)
-  }
-};
-
-export const adminCheckout = async (req:any, res:any) => {
-  try {
-    await cartService.adminCheckout(req.body.userId);
-    sendResponse(res, STATUS.OK, MSG.ORDER_PLACED)
-  } catch (err:any) {
-    sendResponse(res, STATUS.BAD_REQUEST, err.message)
-  }
-}

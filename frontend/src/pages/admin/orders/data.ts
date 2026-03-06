@@ -26,7 +26,7 @@ export const INITIAL_ORDERS: Order[] = [
     table: 20,
     guests: 4,
     customer: "Sarah K.",
-    payment: "Unpaid",
+    payment: "Pending",
     status: "pending",
     total: 230,
     items: [
@@ -57,7 +57,7 @@ export const INITIAL_ORDERS: Order[] = [
     table: 20,
     guests: 4,
     customer: "Emily R.",
-    payment: "Unpaid",
+    payment: "Pending",
     status: "pending",
     total: 230,
     items: [

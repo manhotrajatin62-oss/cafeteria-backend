@@ -8,7 +8,7 @@ const statusColor: Record<string, string> = {
 
 const paymentColor: Record<string, string> = {
   Paid: "text-green-500",
-  Unpaid: "text-red-500",
+  Pending: "text-red-500",
 };
 
 function StatusBadge({ status }: any) {
