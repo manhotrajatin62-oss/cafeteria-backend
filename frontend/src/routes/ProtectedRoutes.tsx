@@ -8,6 +8,11 @@ const ProtectedRoutes = () => {
     return <Navigate to="/login" replace />;
   }
 
+  // prevent admin from accessing user routes
+  if (user.role === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
   return <Outlet />;
 };
 

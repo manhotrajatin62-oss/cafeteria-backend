@@ -6,7 +6,7 @@ export const MSG = {
     INVALID_QUANTITY: "invalid quantity",
     CHECKOUT_SUCCESS: "checkout successful",
     OTP_CREATED: "otp generated successfully",
-    INVALID_OTP : "invalid otp",
+    INVALID_OTP : "Invalid OTP",
     OTP_EXPIRED: "otp expired",
     ORDER_PLACED: "order placed successfully",
     ADMIN:{
@@ -15,7 +15,7 @@ export const MSG = {
         EXISTS: "admin already exists"
     },
     USER:{
-        NOT_FOUND: "user not found",
+        NOT_FOUND: "User not found",
         EXISTS: "User exists",
         LOGIN: "user login success",
         FETCHED: "user details fetched successfully",

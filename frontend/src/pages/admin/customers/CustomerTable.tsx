@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { Customer, FieldConfig, View, WalletRecord } from "../types.ts";
 import { INITIAL_CUSTOMERS, WALLET_DATA } from "../data.ts";
@@ -107,9 +107,7 @@ const walletColumns: TableColumn<WalletRecord>[] = [
     selector: (r) => r.payment,
     sortable: true,
     center: true,
-    cell: (r) => (
-      <span className="text-sm font-semibold">{r.payment}</span>
-    ),
+    cell: (r) => <span className="text-sm font-semibold">{r.payment}</span>,
   },
   {
     name: "Wallet Balance",
@@ -117,9 +115,7 @@ const walletColumns: TableColumn<WalletRecord>[] = [
     sortable: true,
     center: true,
     cell: (r) => (
-      <span className="text-sm font-semibold">
-        {r.walletBalance}
-      </span>
+      <span className="text-sm font-semibold">{r.walletBalance}</span>
     ),
   },
   {
@@ -127,22 +123,17 @@ const walletColumns: TableColumn<WalletRecord>[] = [
     selector: (r) => r.date,
     sortable: true,
     center: true,
-    cell: (r) => (
-      <span className="text-sm font-semibold">{r.date}</span>
-    ),
+    cell: (r) => <span className="text-sm font-semibold">{r.date}</span>,
   },
   {
     name: "Time",
     selector: (r) => r.time,
     center: true,
-    cell: (r) => (
-      <span className="text-sm font-semibold">{r.time}</span>
-    ),
+    cell: (r) => <span className="text-sm font-semibold">{r.time}</span>,
   },
 ];
 
 export default function CustomerTable() {
-  
   // states
   const [rows, setRows] = useState<Customer[]>(INITIAL_CUSTOMERS);
   const [view, setView] = useState<View>("table");
@@ -168,7 +159,7 @@ export default function CustomerTable() {
     {
       name: "Name",
       sortable: true,
-      minWidth: "200px" ,
+      minWidth: "200px",
       sortFunction: (a, b) => a.name.localeCompare(b.name),
       grow: 1.5,
       cell: (row) => (
@@ -191,20 +182,16 @@ export default function CustomerTable() {
       sortable: true,
       center: true,
       minWidth: "220px",
-      cell: (row) => (
-        <span className="text-sm font-semibold">{row.email}</span>
-      ),
+      cell: (row) => <span className="text-sm font-semibold">{row.email}</span>,
     },
     {
       name: "Orders",
       selector: (row) => row.orders ?? 0,
       sortable: true,
-      minWidth: "50px" ,
+      minWidth: "50px",
       center: true,
       cell: (row) => (
-        <span className="text-sm font-semibold">
-          {row.orders ?? 0}
-        </span>
+        <span className="text-sm font-semibold">{row.orders ?? 0}</span>
       ),
     },
     {
@@ -214,16 +201,14 @@ export default function CustomerTable() {
       center: true,
       minWidth: "140px",
       cell: (row) => (
-        <span className="text-sm font-semibold">
-          {row.pendingBill}
-        </span>
+        <span className="text-sm font-semibold">{row.pendingBill}</span>
       ),
     },
     {
       name: "Wallet",
       selector: (row) => row.wallet,
       sortable: true,
-      minWidth : "80px",
+      minWidth: "80px",
       center: true,
       cell: (row) => (
         <span className="text-sm font-semibold">{row.wallet}</span>
@@ -256,13 +241,18 @@ export default function CustomerTable() {
     },
   ];
 
-  function findConflict(data: Omit<Customer, "id">, excludeId?: number): string | null {
-    const inName  = (data.name  ?? "").toLowerCase().trim();
+  function findConflict(
+    data: Omit<Customer, "id">,
+    excludeId?: number,
+  ): string | null {
+    const inName = (data.name ?? "").toLowerCase().trim();
     const inEmail = (data.email ?? "").toLowerCase().trim();
     for (const row of rows) {
       if (excludeId !== undefined && row.id === excludeId) continue;
-      if (inName  !== "" && row.name.toLowerCase().trim()  === inName)  return "name";
-      if (inEmail !== "" && row.email.toLowerCase().trim() === inEmail) return "email";
+      if (inName !== "" && row.name.toLowerCase().trim() === inName)
+        return "name";
+      if (inEmail !== "" && row.email.toLowerCase().trim() === inEmail)
+        return "email";
     }
     return null;
   }
@@ -270,14 +260,15 @@ export default function CustomerTable() {
   function handleAddSubmit(data: Omit<Customer, "id">) {
     const conflict = findConflict(data);
     if (conflict) {
-      toast.error(
-        `A customer with this ${conflict} already exists.`,
-        {
-          duration: 3500,
-          style: { background: "#fff", color: "#1f2937", border: "1px solid #fca5a5" },
-          iconTheme: { primary: "#ef4444", secondary: "#fff" },
+      toast.error(`A customer with this ${conflict} already exists.`, {
+        duration: 3500,
+        style: {
+          background: "#fff",
+          color: "#1f2937",
+          border: "1px solid #fca5a5",
         },
-      );
+        iconTheme: { primary: "#ef4444", secondary: "#fff" },
+      });
       return;
     }
     const newId = Math.max(0, ...rows.map((r) => r.id)) + 1;
@@ -289,14 +280,15 @@ export default function CustomerTable() {
     if (!editTarget) return;
     const conflict = findConflict(data, editTarget.id);
     if (conflict) {
-      toast.error(
-        `Another customer with this ${conflict} already exists.`,
-        {
-          duration: 3500,
-          style: { background: "#fff", color: "#1f2937", border: "1px solid #fca5a5" },
-          iconTheme: { primary: "#ef4444", secondary: "#fff" },
+      toast.error(`Another customer with this ${conflict} already exists.`, {
+        duration: 3500,
+        style: {
+          background: "#fff",
+          color: "#1f2937",
+          border: "1px solid #fca5a5",
         },
-      );
+        iconTheme: { primary: "#ef4444", secondary: "#fff" },
+      });
       return;
     }
     setRows((prev) =>
@@ -334,7 +326,6 @@ export default function CustomerTable() {
   if (view === "add") {
     return (
       <div className="min-h-screen">
-        <Toaster position="top-right" />
         <div>
           <GenericForm<Customer>
             title="Add Customer"
@@ -352,7 +343,6 @@ export default function CustomerTable() {
   if (view === "edit" && editTarget) {
     return (
       <div className="min-h-screen">
-        <Toaster position="top-right" />
         <div>
           <GenericForm<Customer>
             title="Edit Customer"
@@ -372,9 +362,7 @@ export default function CustomerTable() {
 
   return (
     <div className="min-h-screen">
-      <Toaster position="top-right" />
       <div className="flex items-center justify-between px-6 pt-6 pb-4">
-
         <h1 className="text-xl font-bold text-gray-800">Customers</h1>
 
         <button
@@ -386,7 +374,6 @@ export default function CustomerTable() {
       </div>
 
       <div className="mx-6 mb-6 rounded-lg border border-gray-300 bg-white">
-
         {/* Tab switcher */}
         <div className="flex gap-1 border-b border-gray-100 px-6 pt-4">
           <button
@@ -412,12 +399,11 @@ export default function CustomerTable() {
           </button>
         </div>
 
-            {/* users table data */}
+        {/* users table data */}
         {activeTab === "userList" && (
           <div className="p-6">
             <div className="mb-5 flex justify-end">
-
-              <div className="border-orange w-65 flex items-center gap-2 overflow-hidden rounded-full border bg-white px-3 py-1.5">
+              <div className="border-orange flex w-65 items-center gap-2 overflow-hidden rounded-full border bg-white px-3 py-1.5">
                 <input
                   type="text"
                   id="search-users"
@@ -437,7 +423,6 @@ export default function CustomerTable() {
                 )}
                 <IoSearch className="text-orange cursor-pointer" size={20} />
               </div>
-
             </div>
 
             <DataTable
@@ -460,16 +445,14 @@ export default function CustomerTable() {
         {/* wallet history component */}
         {activeTab === "walletHistory" && (
           <div className="p-6">
-
             <div className="mb-5 flex items-center justify-between gap-3">
-
               {/* download button */}
               <button className="bg-orange hover:bg-dark-orange cursor-pointer rounded-lg px-5 py-2 text-sm font-semibold text-white shadow transition active:scale-95">
                 Download Excel
               </button>
 
               {/* search field */}
-              <div className="border-orange w-65 flex items-center gap-2 overflow-hidden rounded-full border bg-white px-3 py-1.5">
+              <div className="border-orange flex w-65 items-center gap-2 overflow-hidden rounded-full border bg-white px-3 py-1.5">
                 <input
                   type="text"
                   name="search-wallet"

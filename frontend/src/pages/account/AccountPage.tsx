@@ -5,6 +5,7 @@ import { MdBarChart, MdDelete } from "react-icons/md";
 import { IoIosExit, IoIosWallet } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLogin } from "../../store/useLogin";
+import toast from "react-hot-toast";
 
 export interface OrderRecord {
   id: number;
@@ -56,6 +57,7 @@ export default function AccountPage() {
     setShowLogin(true);
     setShowOtpPage(false);
     setOtp("");
+    toast.success("Logout successful");
   }
 
   return (

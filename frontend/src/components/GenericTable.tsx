@@ -1,5 +1,5 @@
 import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
 import DeleteModal from "./DeleteModal";
@@ -218,41 +218,34 @@ export default function GenericTable<T extends BaseRecord>({
 
   if (view === "add") {
     return (
-      <>
-        <Toaster position="top-right" />
-        <GenericForm<T>
-          title={`Add ${entityLabel}`}
-          fields={fields}
-          defaultImage={defaultImage}
-          onBack={() => setView("table")}
-          onSubmit={handleAddSubmit}
-        />
-      </>
+      <GenericForm<T>
+        title={`Add ${entityLabel}`}
+        fields={fields}
+        defaultImage={defaultImage}
+        onBack={() => setView("table")}
+        onSubmit={handleAddSubmit}
+      />
     );
   }
 
   if (view === "edit" && editTarget) {
     return (
-      <>
-        <Toaster position="top-right" />
-        <GenericForm<T>
-          title={`Edit ${entityLabel}`}
-          fields={fields}
-          initial={editTarget}
-          defaultImage={defaultImage}
-          onBack={() => {
-            setEditTarget(null);
-            setView("table");
-          }}
-          onSubmit={handleEditSubmit}
-        />
-      </>
+      <GenericForm<T>
+        title={`Edit ${entityLabel}`}
+        fields={fields}
+        initial={editTarget}
+        defaultImage={defaultImage}
+        onBack={() => {
+          setEditTarget(null);
+          setView("table");
+        }}
+        onSubmit={handleEditSubmit}
+      />
     );
   }
 
   return (
     <div className="flex min-h-screen items-start justify-center">
-      <Toaster position="top-right" />
       <div className="w-full bg-white p-6">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-xl font-bold text-gray-800">{title}</h1>
@@ -265,7 +258,6 @@ export default function GenericTable<T extends BaseRecord>({
         </div>
 
         <div className="my-6 flex w-full flex-col gap-6 rounded-lg border border-gray-300 p-6">
-          
           {/* Search bar */}
           <div className="border-orange flex w-65 items-center gap-2 self-end overflow-hidden rounded-full border bg-white px-3 py-1.5">
             <input

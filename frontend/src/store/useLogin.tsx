@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { requestOtp, loginWithOtp, registerUser } from "../api/authApi";
+import toast from "react-hot-toast";
 
 type Name = {
   value: string;
@@ -244,8 +245,8 @@ export const useLogin = create<LoginStore>((set, get) => ({
         set({ showLoader: false });
         state.goToOtpPage();
       } catch (error: any) {
-         set({ showLoader: false });
-        console.error("API Error:", error.response?.data || error.message);
+        set({ showLoader: false });
+        toast.error(error.response?.data?.message || "Failed to send OTP");
       }
 
       return;
@@ -282,6 +283,7 @@ export const useLogin = create<LoginStore>((set, get) => ({
       set({ showLoader: true });
       await registerUser(updatedState.name.value, updatedState.email.value);
       setTimeout(() => {
+        toast.success("Account created successfully");
         set({ showLoader: false, showLogin: true });
         set({
           name: {
@@ -299,8 +301,8 @@ export const useLogin = create<LoginStore>((set, get) => ({
         });
       }, 1000);
     } catch (error: any) {
-      console.error("API Error:", error.response?.data || error.message);
       setTimeout(() => {
+        toast.error(error.response?.data?.message || "Failed to register user");
         set({ showLoader: false, showLogin: false });
       }, 500);
     }
@@ -318,11 +320,16 @@ export const useLogin = create<LoginStore>((set, get) => ({
       set({ showLoader: false });
       const { data } = res.data;
 
-      localStorage.setItem("user", JSON.stringify({token : data.token, ...data.user}));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ token: data.token, ...data.user }),
+      );
+
+      toast.success("Login successful");
       navigate("/");
     } catch (error: any) {
-       set({ showLoader: false });
-      console.error("API Error:", error.response?.data || error.message);
+      set({ showLoader: false });
+      toast.error(error.response?.data?.message || "Invalid OTP");
     }
   },
 }));

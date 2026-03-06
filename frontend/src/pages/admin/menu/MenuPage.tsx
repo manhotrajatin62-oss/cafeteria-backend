@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import type { Product } from "../types.ts";
 import type { Category, MenuItem } from "./types.ts";
 import { SEED_CATEGORIES } from "./data.ts";
@@ -82,9 +81,6 @@ export default function MenuPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Toast notifications */}
-      <Toaster position="top-right" />
-
       {/* Page heading */}
       <div className="flex items-center justify-between px-6 pt-6 pb-4">
         <h1 className="text-xl font-bold text-gray-800">Menu</h1>
