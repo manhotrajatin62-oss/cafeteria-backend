@@ -1,6 +1,5 @@
 import type { TableColumn } from "react-data-table-component";
 import type { Product, FieldConfig } from "../types.ts";
-import { INITIAL_PRODUCTS } from "../data.ts";
 import GenericTable from "../../../components/GenericTable.tsx";
 import food from "../../../assets/food.jpg";
 
@@ -20,7 +19,7 @@ const productColumns: TableColumn<Product>[] = [
     cell: (row) => (
       <div className="flex items-center gap-3 py-2">
         <img
-          src={row.image}
+          src={food}
           alt={row.name}
           className="h-10 w-10 shrink-0 rounded-lg object-cover"
           onError={(e) => {
@@ -55,7 +54,7 @@ const productColumns: TableColumn<Product>[] = [
     sortable: true,
     center: true,
     cell: (row) => (
-      <span className="text-sm font-semibold text-black">{row.productId}</span>
+      <span className="text-sm font-semibold text-black">{row._id}</span>
     ),
   },
   {
@@ -76,7 +75,7 @@ const productColumns: TableColumn<Product>[] = [
     center: true,
     cell: (row) => (
       <span className="text-sm font-semibold text-black">
-        Rs. {row.price.toFixed(2)}
+        ₹ {row.price.toFixed(2)}
       </span>
     ),
   },
@@ -87,18 +86,6 @@ const productFields: FieldConfig<Product>[] = [
     key: "name",
     label: "Product Name",
     placeholder: "Product Name",
-    type: "text",
-  },
-  {
-    key: "unit",
-    label: "Product Unit",
-    placeholder: "Enter Unit",
-    type: "text",
-  },
-  {
-    key: "category",
-    label: "Category",
-    placeholder: "Enter Category",
     type: "text",
   },
   {
@@ -113,12 +100,6 @@ const productFields: FieldConfig<Product>[] = [
     placeholder: "Select Status",
     type: "select",
     options: ["In Stock", "Out of Stock"],
-  },
-  {
-    key: "productId",
-    label: "Product ID",
-    placeholder: "123456789",
-    type: "text",
   },
   {
     key: "quantity",
@@ -152,7 +133,6 @@ export default function ProductTable() {
       title="Product"
       entityLabel="Product"
       addLabel="+ Add Product"
-      initialData={INITIAL_PRODUCTS}
       columns={productColumns}
       fields={productFields}
       defaultImage={food}

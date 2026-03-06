@@ -1,6 +1,13 @@
 import { itemRepo } from "../repos/item.repo.ts";
+import { MSG } from "../constants/messages.ts";
 
 const createItem = async (data: any) => {
+  const existingItem = await itemRepo.findByName(data.name);
+
+  if (existingItem) {
+    throw new Error(MSG.ITEM.EXISTS);
+  }
+
   const item = await itemRepo.createItem(data);
   return item;
 };

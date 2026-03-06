@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
@@ -7,16 +7,16 @@ import GenericForm from "./GenericForm";
 import { FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import { IoClose, IoSearch } from "react-icons/io5";
+import { addProduct, getProducts } from "../api/ProductApi.ts";
+import Loader from "../ui/Loader.tsx";
 
 interface GenericTableProps<T extends BaseRecord> {
   readonly title: string;
   readonly entityLabel: string;
   readonly addLabel: string;
-  readonly initialData: T[];
   readonly columns: TableColumn<T>[];
   readonly fields: FieldConfig<T>[];
   readonly defaultImage: string;
-  readonly nameKey?: keyof T;
   readonly duplicateKeys?: (keyof T)[];
 }
 
@@ -90,7 +90,6 @@ export default function GenericTable<T extends BaseRecord>({
   title,
   entityLabel,
   addLabel,
-  initialData,
   columns,
   fields,
   defaultImage,
@@ -99,11 +98,31 @@ export default function GenericTable<T extends BaseRecord>({
   type View = "table" | "add" | "edit";
 
   // states
-  const [rows, setRows] = useState<T[]>(initialData);
+  const [rows, setRows] = useState<any>();
+  const [loading, setLoading] = useState(false);
   const [view, setView] = useState<View>("table");
   const [deleteTarget, setDeleteTarget] = useState<T | null>(null);
   const [editTarget, setEditTarget] = useState<T | null>(null);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const res = await getProducts();
+        setRows(res.data.data);
+        setLoading(false);
+      } catch (error: any) {
+        setLoading(false);
+        toast.error(
+          error.response?.data?.message ||
+            "Error occurred while fetching products",
+        );
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   function findConflictKey(
     data: Omit<T, "id">,
@@ -117,7 +136,7 @@ export default function GenericTable<T extends BaseRecord>({
         .toLowerCase()
         .trim();
       if (incoming === "") continue;
-      const hasConflict = rows.some((row) => {
+      const hasConflict = rows?.some((row: any) => {
         if (excludeId !== undefined && row.id === excludeId) return false;
         const existing = String(
           (row as Record<string, unknown>)[key as string] ?? "",
@@ -152,19 +171,32 @@ export default function GenericTable<T extends BaseRecord>({
 
   function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    setRows((prev) => prev.filter((r) => r.id !== deleteTarget.id));
+    setRows((prev: any) => prev.filter((r: any) => r.id !== deleteTarget.id));
     setDeleteTarget(null);
   }
 
-  function handleAddSubmit(data: Omit<T, "id">) {
+  async function handleAddSubmit(data: Omit<T, "id">) {
     const conflict = findConflictKey(data);
+
     if (conflict) {
       showDuplicateToast(conflict, "add");
       return;
     }
-    const newId = Math.max(0, ...rows.map((r) => r.id)) + 1;
-    setRows((prev) => [...prev, { ...data, id: newId } as T]);
-    setView("table");
+
+    try {
+      const res = await addProduct(data);
+
+      const newItem = res.data;
+      console.log(newItem);
+      toast.success(newItem.message);
+      // setRows((prev: any) => [...prev, newItem]);
+      setView("table");
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message ||
+          "Error occurred while creating product",
+      );
+    }
   }
 
   function handleEditSubmit(data: Omit<T, "id">) {
@@ -174,8 +206,8 @@ export default function GenericTable<T extends BaseRecord>({
       showDuplicateToast(conflict, "edit");
       return;
     }
-    setRows((prev) =>
-      prev.map((r) =>
+    setRows((prev: any) =>
+      prev.map((r: any) =>
         r.id === editTarget.id ? ({ ...data, id: editTarget.id } as T) : r,
       ),
     );
@@ -186,7 +218,7 @@ export default function GenericTable<T extends BaseRecord>({
   const filteredRows = (() => {
     const q = search.toLowerCase().trim();
     if (!q) return rows;
-    return rows.filter((row) =>
+    return rows.filter((row: any) =>
       fields.some((field) => {
         const val = String(
           (row as Record<string, unknown>)[field.key as string] ?? "",
@@ -280,20 +312,26 @@ export default function GenericTable<T extends BaseRecord>({
             <IoSearch className="text-orange cursor-pointer" size={20} />
           </div>
 
-          <DataTable
-            columns={allColumns}
-            data={filteredRows}
-            customStyles={customStyles}
-            pagination
-            paginationPerPage={10}
-            highlightOnHover
-            responsive
-            noDataComponent={
-              <div className="py-12 text-sm font-semibold text-gray-400">
-                No {title.toLowerCase()} found.
-              </div>
-            }
-          />
+          {loading ? (
+            <div className="h-100">
+              <Loader />
+            </div>
+          ) : (
+            <DataTable
+              columns={allColumns}
+              data={filteredRows}
+              customStyles={customStyles}
+              pagination
+              paginationPerPage={10}
+              highlightOnHover
+              responsive
+              noDataComponent={
+                <div className="py-12 text-sm font-semibold text-gray-400">
+                  No {title.toLowerCase()} found.
+                </div>
+              }
+            />
+          )}
         </div>
       </div>
 

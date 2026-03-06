@@ -9,8 +9,7 @@ export interface Product extends BaseRecord {
   productId: string;
   quantity: number;
   price: number;
-  unit: string;
-  category: string;
+  _id: number
 }
 
 export interface Customer extends BaseRecord {

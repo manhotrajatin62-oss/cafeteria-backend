@@ -2,17 +2,16 @@ import mongoose from "mongoose";
 
 const itemSchema = new mongoose.Schema(
   {
-    name: {type : String, unique : true},
+    name: { type: String, unique: true },
     price: Number,
     quantity: Number,
+    status: {
+      type: String,
+      enum: ["In Stock", "Out of Stock"],
+      default: "In Stock",
+    },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
-
-itemSchema.virtual("status").get(function () {
-  return this.quantity == 0 ? "Out of stock" : "Item available";
-});
-
-itemSchema.set("toJSON", { virtuals: true });
 
 export default mongoose.model("Item", itemSchema);

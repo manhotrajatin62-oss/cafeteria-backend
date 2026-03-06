@@ -8,6 +8,10 @@ const findItems = async () => {
   return Item.find();
 };
 
+const findByName = async (name:string) => {
+  return Item.findOne({name});
+};
+
 const findAndUpdate = async (id: any, data: any) => {
   return Item.findByIdAndUpdate(id, data, { new: true });
 };
@@ -21,4 +25,5 @@ export const itemRepo = {
   findItems,
   findAndUpdate,
   deleteItem,
+  findByName
 };
