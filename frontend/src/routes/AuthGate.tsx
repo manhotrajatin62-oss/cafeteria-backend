@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { getAuth } from "../utils/auth";
 import LoginPage from "../auth/LoginPage";
@@ -5,7 +6,7 @@ import AppLayout from "../layout/AppLayout";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Home from "../pages/home/Home";
 import Team from "../pages/about us/Team";
-import AccountPage from "../pages/account/AccountPage";
+const AccountPage = lazy(() => import("../pages/account/AccountPage"));
 import AdminRoutes from "./AdminRoutes";
 import Dashboard from "../pages/admin/dashboard/Dashboard";
 import OrdersPage from "../pages/admin/orders/OrdersPage";
@@ -13,6 +14,8 @@ import ProductTable from "../pages/admin/products/ProductTable";
 import CustomerTable from "../pages/admin/customers/CustomerTable";
 import MenuPage from "../pages/admin/menu/MenuPage";
 import NotFound from "../ui/NotFound";
+import Loader from "../ui/Loader";
+import ErrorBoundary from "../ui/ErrorBoundary";
 
 const AuthGate = () => {
   const user = getAuth();
@@ -40,12 +43,20 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<AppLayout />}>
-
         {/* USER ROUTES */}
         <Route element={<ProtectedRoutes />}>
           <Route index element={<Home />} />
           <Route path="about" element={<Team />} />
-          <Route path="account" element={<AccountPage />} />
+          <Route
+            path="account"
+            element={
+              <ErrorBoundary>
+                <Suspense fallback={<Loader />}>
+                  <AccountPage />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
         </Route>
 
         {/* ADMIN ROUTES */}

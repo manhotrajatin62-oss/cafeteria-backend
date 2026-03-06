@@ -11,3 +11,7 @@ export const loginWithOtp = (email: string, otp: string | number) => {
 export const registerUser = (name: string, email: string) => {
   return apiClient.post("/auth/register", { name, email });
 };
+
+export const fetchUserInfo = () => {
+  return apiClient.get("/auth/me");
+};

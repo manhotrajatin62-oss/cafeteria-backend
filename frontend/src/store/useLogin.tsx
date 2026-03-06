@@ -247,6 +247,7 @@ export const useLogin = create<LoginStore>((set, get) => ({
       } catch (error: any) {
         set({ showLoader: false });
         toast.error(error.response?.data?.message || "Failed to send OTP");
+        console.error(error)
       }
 
       return;

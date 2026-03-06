@@ -1,5 +1,5 @@
 export const MSG = {
-  NO_TOKEN: "token is not available",
+  NO_TOKEN: "Token is not available",
   INVALID_TOKEN: "invalid token",
   INVALID_CREDENTIALS: "invalid credentials",
   FORBIDDEN: "access denied",

@@ -1,7 +1,6 @@
 import OrangeButton from "../ui/OrangeButton";
-import Loader from "../ui/Loader";
+import FormLoader from "../ui/FormLoader";
 import { useLogin } from "../store/useLogin";
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import OtpPage from "./OtpPage";
 import InputFields from "./InputFields";
@@ -16,8 +15,6 @@ const Form = () => {
     handleFormSubmit,
   } = useLogin();
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (showOtpPage) {
       startOtpTimer();
@@ -26,7 +23,7 @@ const Form = () => {
 
   return (
     <>
-      {showLoader && <Loader />}
+      {showLoader && <FormLoader />}
       <section className="relative h-full w-90 overflow-hidden">
         <form
           onSubmit={(e: any) => handleFormSubmit(e)}

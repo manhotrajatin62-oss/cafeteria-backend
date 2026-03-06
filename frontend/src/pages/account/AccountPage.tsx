@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import AccountTables from "./AccountTables";
 import { FiUser } from "react-icons/fi";
 import { MdBarChart, MdDelete } from "react-icons/md";
@@ -6,6 +6,7 @@ import { IoIosExit, IoIosWallet } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useLogin } from "../../store/useLogin";
 import toast from "react-hot-toast";
+import { fetchUserInfo } from "../../api/authApi";
 
 export interface OrderRecord {
   id: number;
@@ -29,6 +30,7 @@ export default function AccountPage() {
   const { setShowLogin, setOtp, setShowOtpPage } = useLogin();
 
   // states
+  const [user, setUser] = useState<any>();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -59,6 +61,19 @@ export default function AccountPage() {
     setOtp("");
     toast.success("Logout successful");
   }
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetchUserInfo();
+        setUser(res.data.data);
+      } catch (error:any) {
+        toast.error(error.response?.data?.message || "Error occurred while fetching details");
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <div className="min-h-screen">
@@ -129,14 +144,14 @@ export default function AccountPage() {
               {/* Name */}
               <div className="rounded-lg border border-gray-300 p-4">
                 <p className="mb-1 text-xs text-gray-400">Name</p>
-                <p className="font-semibold text-gray-800">Akashdeep Singh</p>
+                <p className="font-semibold text-gray-800">{user?.user?.name}</p>
               </div>
 
               {/* Email */}
               <div className="rounded-lg border border-gray-300 p-4">
                 <p className="mb-1 text-xs text-gray-400">Email ID</p>
                 <p className="font-semibold text-gray-800">
-                  SinghAkashdeep1@Seasiaconnect.Com
+                  {user?.user?.email}
                 </p>
               </div>
             </div>
@@ -151,7 +166,7 @@ export default function AccountPage() {
 
                   <div>
                     <p className="mb-1 text-xs text-gray-400">Pending Bill</p>
-                    <p className="font-semibold text-gray-800">₹15.00</p>
+                    <p className="font-semibold text-gray-800">₹{user?.wallet?.pendingBill}</p>
                   </div>
                 </div>
 
@@ -162,7 +177,7 @@ export default function AccountPage() {
 
                   <div>
                     <p className="mb-1 text-xs text-gray-400">Wallet</p>
-                    <p className="font-semibold text-gray-800">₹0.00</p>
+                    <p className="font-semibold text-gray-800">₹{user?.wallet?.balance}</p>
                   </div>
                 </div>
               </div>

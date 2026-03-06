@@ -1,12 +1,13 @@
 const Loader = () => {
+
   return (
-    <section className="flex h-dvh absolute z-99 w-dvw items-center justify-center bg-black/50">
-      <div className="flex flex-row gap-2">
-        <div className="bg-orange h-6 w-6 animate-bounce rounded-full"></div>
-        <div className="bg-orange h-6 w-6 animate-bounce rounded-full [animation-delay:-.3s]"></div>
-        <div className="bg-orange h-6 w-6 animate-bounce rounded-full [animation-delay:-.5s]"></div>
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="flex flex-col gap-4 items-center">
+        <div className="h-15 w-15 animate-spin rounded-full border-6 border-orange border-e-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"/>
+
+      <span className="font-semibold text-sm">Loading...</span>
       </div>
-    </section>
+    </div>
   );
 };
 
