@@ -12,7 +12,7 @@ import Dashboard from "../pages/admin/dashboard/Dashboard";
 import OrdersPage from "../pages/admin/orders/OrdersPage";
 import ProductTable from "../pages/admin/products/ProductTable";
 import CustomerTable from "../pages/admin/customers/CustomerTable";
-import MenuPage from "../pages/admin/menu/MenuPage";
+const MenuPage = lazy(() => import("../pages/admin/menu/MenuPage"));
 import NotFound from "../ui/NotFound";
 import Loader from "../ui/Loader";
 import ErrorBoundary from "../ui/ErrorBoundary";
@@ -66,7 +66,16 @@ const AppRoutes = () => {
             <Route path="orders" element={<OrdersPage />} />
             <Route path="products" element={<ProductTable />} />
             <Route path="customers" element={<CustomerTable />} />
-            <Route path="menu" element={<MenuPage />} />
+            <Route
+              path="menu"
+              element={
+                <ErrorBoundary>
+                  <Suspense fallback={<Loader />}>
+                    <MenuPage />
+                  </Suspense>
+                </ErrorBoundary>
+              }
+            />
             <Route path="account" element={<AccountPage />} />
           </Route>
         </Route>

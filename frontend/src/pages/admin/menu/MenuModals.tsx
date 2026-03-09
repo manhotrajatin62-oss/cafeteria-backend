@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { INITIAL_PRODUCTS } from "../data.ts";
 import toast from "react-hot-toast";
 import type { Category } from "./types.ts";
 import type { Product } from "../types.ts";
+import { useAdmin } from "../../../store/useAdmin.tsx";
 
 export function AnimatedModal({
   onBackdropClick,
@@ -119,7 +119,7 @@ export function AddCategoryModal({
   onCancel,
   existingCategories,
 }: {
-  readonly onConfirm: (cat: Omit<Category, "id">) => void;
+  readonly onConfirm: (cat: Omit<Category, "_id">) => void;
   readonly onCancel: () => void;
   readonly existingCategories: Category[];
 }) {
@@ -192,93 +192,96 @@ export function AddCategoryModal({
         {/* heading */}
         <h2 className="mb-6 text-lg font-bold text-gray-800">Add Category</h2>
 
-        {/* category name field */}
-        <div className="mb-4">
-          <label
-            htmlFor="category"
-            className="mb-1.5 block text-sm font-semibold text-gray-700"
-          >
-            Category Name <span className="text-red-400">*</span>
-          </label>
-          <input
-            className={`${inputBase} ${errors.name ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
-            placeholder="e.g. Dinner"
-            id="category"
-            name="category"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setErrors((p) => ({ ...p, name: "" }));
-            }}
-          />
-          {errors.name && (
-            <p className="mt-1 text-xs text-red-500">{errors.name}</p>
-          )}
-        </div>
+        <form className="" onSubmit={(e: any) => e.preventDefault()}>
+          {/* category name field */}
+          <div className="mb-4">
+            <label
+              htmlFor="category"
+              className="mb-1.5 text-start block text-sm font-semibold text-gray-700"
+            >
+              Category Name <span className="text-red-400">*</span>
+            </label>
+            <input
+              className={`${inputBase} ${errors.name ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
+              placeholder="e.g. Dinner"
+              id="category"
+              name="category"
+              value={name}
+              onChange={(e) => {
+                setName(e.target.value);
+                setErrors((p) => ({ ...p, name: "" }));
+              }}
+            />
+            {errors.name && (
+              <p className="mt-1 text-xs text-red-500">{errors.name}</p>
+            )}
+          </div>
 
-        {/* start time field */}
-        <div className="mb-4">
-          <label
-            htmlFor="start-time"
-            className="mb-1.5 block text-sm font-semibold text-gray-700"
-          >
-            Start Time <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="time"
-            id="start-time"
-            name="start-time"
-            className={`${inputBase} ${errors.startTime ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
-            value={startTime}
-            onChange={(e) => {
-              setStartTime(e.target.value);
-              setErrors((p) => ({ ...p, startTime: "" }));
-            }}
-          />
-          {errors.startTime && (
-            <p className="mt-1 text-xs text-red-500">{errors.startTime}</p>
-          )}
-        </div>
+          {/* start time field */}
+          <div className="mb-4">
+            <label
+              htmlFor="start-time"
+              className="mb-1.5 block text-start text-sm font-semibold text-gray-700"
+            >
+              Start Time <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="time"
+              id="start-time"
+              name="start-time"
+              className={`${inputBase} ${errors.startTime ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
+              value={startTime}
+              onChange={(e) => {
+                setStartTime(e.target.value);
+                setErrors((p) => ({ ...p, startTime: "" }));
+              }}
+            />
+            {errors.startTime && (
+              <p className="mt-1 text-xs text-red-500">{errors.startTime}</p>
+            )}
+          </div>
 
-        {/* end time field */}
-        <div className="mb-6">
-          <label
-            htmlFor="end-time"
-            className="mb-1.5 block text-sm font-semibold text-gray-700"
-          >
-            End Time <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="time"
-            id="end-time"
-            name="end-time"
-            className={`${inputBase} ${errors.endTime ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
-            value={endTime}
-            onChange={(e) => {
-              setEndTime(e.target.value);
-              setErrors((p) => ({ ...p, endTime: "" }));
-            }}
-          />
-          {errors.endTime && (
-            <p className="mt-1 text-xs text-red-500">{errors.endTime}</p>
-          )}
-        </div>
+          {/* end time field */}
+          <div className="mb-6">
+            <label
+              htmlFor="end-time"
+              className="mb-1.5 text-start block text-sm font-semibold text-gray-700"
+            >
+              End Time <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="time"
+              id="end-time"
+              name="end-time"
+              className={`${inputBase} ${errors.endTime ? "border-red-400 bg-red-50 focus:ring-red-200" : "focus:ring-orange border-gray-200"}`}
+              value={endTime}
+              onChange={(e) => {
+                setEndTime(e.target.value);
+                setErrors((p) => ({ ...p, endTime: "" }));
+              }}
+            />
+            {errors.endTime && (
+              <p className="mt-1 text-xs text-red-500">{errors.endTime}</p>
+            )}
+          </div>
 
-        {/* form submit buttons */}
-        <div className="flex gap-3">
-          <button
-            onClick={handleSubmit}
-            className="bg-orange hover:bg-dark-orange flex-1 cursor-pointer rounded-xl py-3 text-sm font-semibold text-white shadow transition active:scale-95"
-          >
-            Add Category
-          </button>
-          <button
-            onClick={onCancel}
-            className="flex-1 cursor-pointer rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white shadow transition hover:bg-gray-700 active:scale-95"
-          >
-            Cancel
-          </button>
-        </div>
+          {/* form submit buttons */}
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="bg-orange hover:bg-dark-orange flex-1 cursor-pointer rounded-xl py-3 text-sm font-semibold text-white shadow transition active:scale-95"
+            >
+              Add Category
+            </button>
+            <button
+              onClick={onCancel}
+              className="flex-1 cursor-pointer rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white shadow transition hover:bg-gray-700 active:scale-95"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </AnimatedModal>
   );
@@ -289,16 +292,17 @@ export function AddItemModal({
   onSelect,
   onCancel,
 }: {
-  readonly alreadyAdded: number[];
+  readonly alreadyAdded: (string | number)[];
   readonly onSelect: (p: Product) => void;
   readonly onCancel: () => void;
 }) {
+  const { rows } = useAdmin();
   const [search, setSearch] = useState("");
 
-  const filtered = INITIAL_PRODUCTS.filter(
-    (p) =>
+  const filtered = rows.filter(
+    (p: any) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.productId.includes(search),
+      p._id.includes(search),
   );
 
   return (
@@ -352,11 +356,11 @@ export function AddItemModal({
               No products found.
             </p>
           ) : (
-            filtered.map((p) => {
-              const added = alreadyAdded.includes(p.id);
+            filtered.map((p: any) => {
+              const added = alreadyAdded.includes(p._id);
               return (
                 <button
-                  key={p.id}
+                  key={p._id}
                   onClick={() => {
                     if (added) return;
                     if (p.status === "Out of Stock") {
@@ -391,14 +395,14 @@ export function AddItemModal({
                   >
                     {p.status}
                   </span>
-                  <span className="text-center text-gray-600">
-                    {p.productId}
+                  <span className="truncate text-center text-gray-600">
+                    {p._id}
                   </span>
                   <span className="text-center text-gray-600">
                     {p.quantity}
                   </span>
                   <span className="text-orange text-center font-semibold">
-                    Rs. {p.price}
+                    ₹ {p.price}
                   </span>
                 </button>
               );

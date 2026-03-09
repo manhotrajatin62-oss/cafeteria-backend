@@ -6,7 +6,7 @@ export interface BaseRecord {
 
 export interface Product extends BaseRecord {
   status: "In Stock" | "Out of Stock";
-  productId?: string;
+  productId?: string | number;
   quantity: number;
   price: number;
 }

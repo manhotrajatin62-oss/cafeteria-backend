@@ -1,5 +1,5 @@
 export interface Category {
-  id: number;
+  _id: string;
   name: string;
   startTime: string; 
   endTime: string;   
@@ -7,10 +7,9 @@ export interface Category {
 
 export interface MenuItem {
   rowId: number;     
-  productId: number; 
+  productId: number | string; 
   name: string;
   status: string;
-  productCode: string;
   quantity: number;
   price: number;
 }

@@ -9,6 +9,7 @@ import { MdModeEdit } from "react-icons/md";
 import { IoClose, IoSearch } from "react-icons/io5";
 import { addProduct, deleteProduct, editProduct, getProducts } from "../api/ProductApi.ts";
 import Loader from "../ui/Loader.tsx";
+import { useAdmin } from "../store/useAdmin.tsx";
 
 interface GenericTableProps<T extends BaseRecord> {
   readonly title: string;
@@ -98,7 +99,8 @@ export default function GenericTable<T extends BaseRecord>({
   type View = "table" | "add" | "edit";
 
   // states
-  const [rows, setRows] = useState<any>();
+  const {rows, setRows} = useAdmin();
+  
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<View>("table");
   const [deleteTarget, setDeleteTarget] = useState<T | null>(null);

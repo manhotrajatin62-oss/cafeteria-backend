@@ -59,7 +59,7 @@ const MenuTable = ({
       sortable: true,
       center: true,
       cell: (r) => (
-        <span className="text-sm font-semibold text-gray-800">{r.price}</span>
+        <span className="text-sm font-semibold text-gray-800">₹ {r.price}</span>
       ),
     },
     {
