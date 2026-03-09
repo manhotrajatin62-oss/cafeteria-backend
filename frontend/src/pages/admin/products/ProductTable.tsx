@@ -50,7 +50,7 @@ const productColumns: TableColumn<Product>[] = [
   {
     name: "Product ID",
     minWidth: "110px",
-    selector: (row) => row.productId,
+    selector: (row) => row._id,
     sortable: true,
     center: true,
     cell: (row) => (

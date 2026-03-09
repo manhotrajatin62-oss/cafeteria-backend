@@ -11,7 +11,24 @@ const itemSchema = new mongoose.Schema(
       default: "In Stock",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
+
+itemSchema.pre("save", function () {
+  if (this.quantity === 0) {
+    this.status = "Out of Stock";
+  } else {
+    this.status = "In Stock";
+  }
+});
+
+itemSchema.pre("findOneAndUpdate", function () {
+  const update: any = this.getUpdate();
+
+  if (update.quantity !== undefined) {
+    update.status = update.quantity === 0 ? "Out of Stock" : "In Stock";
+    this.setUpdate(update);
+  }
+});
 
 export default mongoose.model("Item", itemSchema);

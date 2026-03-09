@@ -8,7 +8,7 @@ interface GenericFormProps<T extends BaseRecord> {
   readonly fields: FieldConfig<T>[];
   readonly initial?: T;
   readonly defaultImage: string;
-  readonly onSubmit: (data: Omit<T, "id">) => void;
+  readonly onSubmit: (data: Omit<T, "_id">) => void;
   readonly onBack: () => void;
 }
 
@@ -20,7 +20,6 @@ export default function GenericForm<T extends BaseRecord>({
   onSubmit,
   onBack,
 }: GenericFormProps<T>) {
-
   // states
   const [formState, setFormState] = useState<Record<string, string>>(() => {
     const state: Record<string, string> = {};
@@ -191,7 +190,7 @@ export default function GenericForm<T extends BaseRecord>({
       result[key] = field.type === "number" ? Number.parseFloat(raw) || 0 : raw;
     }
 
-    onSubmit(result as Omit<T, "id">);
+    onSubmit(result as Omit<T, "_id">);
   }
 
   function shouldShowError(key: string): boolean {

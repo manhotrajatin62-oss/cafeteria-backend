@@ -7,7 +7,7 @@ import GenericForm from "./GenericForm";
 import { FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import { IoClose, IoSearch } from "react-icons/io5";
-import { addProduct, getProducts } from "../api/ProductApi.ts";
+import { addProduct, deleteProduct, editProduct, getProducts } from "../api/ProductApi.ts";
 import Loader from "../ui/Loader.tsx";
 
 interface GenericTableProps<T extends BaseRecord> {
@@ -125,8 +125,8 @@ export default function GenericTable<T extends BaseRecord>({
   }, []);
 
   function findConflictKey(
-    data: Omit<T, "id">,
-    excludeId?: number,
+    data: Omit<T, "_id">,
+    excludeId?: string,
   ): string | null {
     if (!duplicateKeys || duplicateKeys.length === 0) return null;
     for (const key of duplicateKeys) {
@@ -137,7 +137,7 @@ export default function GenericTable<T extends BaseRecord>({
         .trim();
       if (incoming === "") continue;
       const hasConflict = rows?.some((row: any) => {
-        if (excludeId !== undefined && row.id === excludeId) return false;
+        if (excludeId !== undefined && row._id === excludeId) return false;
         const existing = String(
           (row as Record<string, unknown>)[key as string] ?? "",
         )
@@ -169,13 +169,23 @@ export default function GenericTable<T extends BaseRecord>({
     );
   }
 
-  function handleDeleteConfirm() {
+  async function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    setRows((prev: any) => prev.filter((r: any) => r.id !== deleteTarget.id));
-    setDeleteTarget(null);
+
+    try {
+      await deleteProduct(deleteTarget._id);
+      toast.success(`${entityLabel} deleted successfully`);
+
+      setDeleteTarget(null);
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message ||
+          `Error occurred while deleting ${entityLabel.toLowerCase()}`,
+      );
+    }
   }
 
-  async function handleAddSubmit(data: Omit<T, "id">) {
+  async function handleAddSubmit(data: Omit<T, "_id">) {
     const conflict = findConflictKey(data);
 
     if (conflict) {
@@ -187,9 +197,7 @@ export default function GenericTable<T extends BaseRecord>({
       const res = await addProduct(data);
 
       const newItem = res.data;
-      console.log(newItem);
       toast.success(newItem.message);
-      // setRows((prev: any) => [...prev, newItem]);
       setView("table");
     } catch (error: any) {
       toast.error(
@@ -199,20 +207,27 @@ export default function GenericTable<T extends BaseRecord>({
     }
   }
 
-  function handleEditSubmit(data: Omit<T, "id">) {
+  async function handleEditSubmit(data: Omit<T, "_id">) {
     if (!editTarget) return;
-    const conflict = findConflictKey(data, editTarget.id);
+
+    const conflict = findConflictKey(data, editTarget._id);
+
     if (conflict) {
       showDuplicateToast(conflict, "edit");
       return;
     }
-    setRows((prev: any) =>
-      prev.map((r: any) =>
-        r.id === editTarget.id ? ({ ...data, id: editTarget.id } as T) : r,
-      ),
-    );
-    setEditTarget(null);
-    setView("table");
+
+    try {
+      const res = await editProduct(editTarget._id, data);
+      toast.success(res.data.message);
+
+      setEditTarget(null);
+      setView("table");
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || "Error occurred while editing product",
+      );
+    }
   }
 
   const filteredRows = (() => {
