@@ -97,6 +97,7 @@ export default function AccountPage() {
             <div className="flex h-60 w-60 items-center justify-center overflow-hidden rounded-full border-2 border-gray-200 bg-gray-100">
               {profileImage ? (
                 <img
+                  draggable="false"
                   src={profileImage}
                   alt="Profile"
                   className="h-full w-full object-cover"

@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { Customer, FieldConfig, View, WalletRecord } from "../types.ts";
-import { INITIAL_CUSTOMERS, WALLET_DATA } from "../data.ts";
+import { WALLET_DATA } from "../data.ts";
 import GenericForm from "../../../components/GenericForm.tsx";
 import DeleteModal from "../../../components/DeleteModal.tsx";
 import { FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import user from "../../../assets/user.jpg";
 import { IoClose, IoSearch } from "react-icons/io5";
+import {
+  deleteCustomer,
+  fetchAllCustomers,
+  updateCustomer,
+} from "../../../api/customersApi.ts";
+import Loader from "../../../ui/Loader.tsx";
+import { registerUser } from "../../../api/authApi.ts";
 
 const customStyles = {
   headRow: {
@@ -135,7 +142,8 @@ const walletColumns: TableColumn<WalletRecord>[] = [
 
 export default function CustomerTable() {
   // states
-  const [rows, setRows] = useState<Customer[]>(INITIAL_CUSTOMERS);
+  const [rows, setRows] = useState<Customer[]>([]);
+  const [loading, setLoading] = useState(false);
   const [view, setView] = useState<View>("table");
   const [editTarget, setEditTarget] = useState<Customer | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
@@ -165,6 +173,7 @@ export default function CustomerTable() {
       cell: (row) => (
         <div className="flex items-center gap-3 py-2">
           <img
+            draggable="false"
             src={row.image === "user" ? user : row.image}
             alt={row.name}
             className="h-10 w-10 shrink-0 rounded-full object-cover"
@@ -201,7 +210,7 @@ export default function CustomerTable() {
       center: true,
       minWidth: "140px",
       cell: (row) => (
-        <span className="text-sm font-semibold">{row.pendingBill}</span>
+        <span className="text-sm font-semibold">₹ {row.pendingBill}</span>
       ),
     },
     {
@@ -211,7 +220,7 @@ export default function CustomerTable() {
       minWidth: "80px",
       center: true,
       cell: (row) => (
-        <span className="text-sm font-semibold">{row.wallet}</span>
+        <span className="text-sm font-semibold">₹ {row.wallet}</span>
       ),
     },
     {
@@ -242,13 +251,15 @@ export default function CustomerTable() {
   ];
 
   function findConflict(
-    data: Omit<Customer, "id">,
-    excludeId?: number,
-  ): string | null {
+    data: Omit<Customer, "_id">,
+    excludeId?: string | number,
+  ): string | null | undefined {
+    if (!rows) return;
+
     const inName = (data.name ?? "").toLowerCase().trim();
     const inEmail = (data.email ?? "").toLowerCase().trim();
     for (const row of rows) {
-      if (excludeId !== undefined && row.id === excludeId) continue;
+      if (excludeId !== undefined && row._id === excludeId) continue;
       if (inName !== "" && row.name.toLowerCase().trim() === inName)
         return "name";
       if (inEmail !== "" && row.email.toLowerCase().trim() === inEmail)
@@ -257,57 +268,77 @@ export default function CustomerTable() {
     return null;
   }
 
-  function handleAddSubmit(data: Omit<Customer, "id">) {
+  async function handleAddSubmit(data: Omit<Customer, "_id">) {
     const conflict = findConflict(data);
     if (conflict) {
-      toast.error(`A customer with this ${conflict} already exists.`, {
-        duration: 3500,
-        style: {
-          background: "#fff",
-          color: "#1f2937",
-          border: "1px solid #fca5a5",
-        },
-        iconTheme: { primary: "#ef4444", secondary: "#fff" },
-      });
+      toast.error(`A customer with this ${conflict} already exists.`);
       return;
     }
-    const newId = Math.max(0, ...rows.map((r) => r.id)) + 1;
-    setRows((prev) => [...prev, { ...data, id: newId } as Customer]);
+
+    try {
+      const res = await registerUser(data.name, data.email);
+
+      const u = res.data.data;
+
+      const formatted = {
+        _id: u._id,
+        name: u.name,
+        email: u.email,
+        image: user,
+        orders: 0,
+        wallet: 0,
+        pendingBill: 0,
+      };
+
+      toast.success("Customer added successfully");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to add customer");
+    }
+
     setView("table");
   }
 
-  function handleEditSubmit(data: Omit<Customer, "id">) {
+  async function handleEditSubmit(data: Omit<Customer, "_id">) {
     if (!editTarget) return;
-    const conflict = findConflict(data, editTarget.id);
+
+    const conflict = findConflict(data, editTarget._id);
     if (conflict) {
-      toast.error(`Another customer with this ${conflict} already exists.`, {
-        duration: 3500,
-        style: {
-          background: "#fff",
-          color: "#1f2937",
-          border: "1px solid #fca5a5",
-        },
-        iconTheme: { primary: "#ef4444", secondary: "#fff" },
-      });
+      toast.error(`Another customer with this ${conflict} already exists.`);
       return;
     }
-    setRows((prev) =>
-      prev.map((r) =>
-        r.id === editTarget.id ? { ...data, id: editTarget.id } : r,
-      ),
-    );
-    setEditTarget(null);
-    setView("table");
+
+    try {
+      const res = await updateCustomer(editTarget._id, data);
+      // setRows((prev) => prev.map((r) => (r._id === updated._id ? updated : r)));
+
+      toast.success("Customer updated successfully");
+
+      setEditTarget(null);
+      setView("table");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error updating customer");
+    }
   }
 
-  function handleDeleteConfirm() {
+  async function handleDeleteConfirm() {
     if (!deleteTarget) return;
-    setRows((prev) => prev.filter((r) => r.id !== deleteTarget.id));
-    setDeleteTarget(null);
+
+    try {
+      await deleteCustomer(deleteTarget._id);
+
+      // setRows((prev) => prev.filter((r) => r._id !== deleteTarget._id));
+
+      toast.success(deleteTarget.name + " deleted successfully");
+
+      setDeleteTarget(null);
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Error deleting customer");
+    }
   }
 
   // search filter logic
   const filteredUsers = (() => {
+    if (!rows) return [];
     const q = userSearch.toLowerCase().trim();
     if (!q) return rows;
     return rows.filter(
@@ -321,6 +352,35 @@ export default function CustomerTable() {
     if (!q) return WALLET_DATA;
     return WALLET_DATA.filter((r) => r.employeeName.toLowerCase().includes(q));
   })();
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchAllCustomers();
+        const formatted = res.data.data.map((u: any) => ({
+          _id: u._id,
+          name: u.name,
+          email: u.email,
+          image: u.image ?? user,
+          orders: u.ordersCount ?? 0,
+          wallet: u.wallet?.balance ?? 0,
+          pendingBill: u.wallet?.pendingBill ?? 0,
+        }));
+
+        setRows(formatted);
+        setLoading(false);
+      } catch (error: any) {
+        setLoading(false);
+        toast.error(
+          error.response?.data?.message ||
+            "Error occurred while fetching customers",
+        );
+      }
+    };
+
+    fetchCustomers();
+  }, []);
 
   // render add customer form component
   if (view === "add") {
@@ -373,7 +433,7 @@ export default function CustomerTable() {
         </button>
       </div>
 
-      <div className="mx-6 mb-6 rounded-lg border border-gray-300 bg-white">
+      <div className="mx-6 mb-6 h-100 rounded-lg border border-gray-300 bg-white">
         {/* Tab switcher */}
         <div className="flex gap-1 border-b border-gray-100 px-6 pt-4">
           <button
@@ -425,20 +485,24 @@ export default function CustomerTable() {
               </div>
             </div>
 
-            <DataTable
-              columns={customerColumns}
-              data={filteredUsers}
-              customStyles={customStyles}
-              pagination
-              paginationPerPage={10}
-              highlightOnHover
-              responsive
-              noDataComponent={
-                <div className="py-12 text-sm font-semibold text-gray-400">
-                  No customers found.
-                </div>
-              }
-            />
+            {loading ? (
+              <Loader />
+            ) : (
+              <DataTable
+                columns={customerColumns}
+                data={filteredUsers}
+                customStyles={customStyles}
+                pagination
+                paginationPerPage={10}
+                highlightOnHover
+                responsive
+                noDataComponent={
+                  <div className="py-12 text-sm font-semibold text-gray-400">
+                    No customers found.
+                  </div>
+                }
+              />
+            )}
           </div>
         )}
 

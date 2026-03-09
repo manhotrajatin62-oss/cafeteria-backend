@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
 import BackButton from "../ui/BackButton.tsx";
 import { BiImageAdd } from "react-icons/bi";
+import AddMoneyModal from "./AddMoneyModal.tsx";
 
 interface GenericFormProps<T extends BaseRecord> {
   readonly title: string;
@@ -20,6 +21,9 @@ export default function GenericForm<T extends BaseRecord>({
   onSubmit,
   onBack,
 }: GenericFormProps<T>) {
+  const customerLockedFields = new Set(["orders", "pendingBill", "wallet"]);
+
+  const isCustomerFieldLocked = (key: string) => customerLockedFields.has(key);
   // states
   const [formState, setFormState] = useState<Record<string, string>>(() => {
     const state: Record<string, string> = {};
@@ -31,13 +35,18 @@ export default function GenericForm<T extends BaseRecord>({
       state[key] =
         initialValue !== undefined && initialValue !== null
           ? String(initialValue)
-          : "";
+          : customerLockedFields.has(key)
+            ? "0"
+            : "";
     }
     return state;
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [submitAttempted, setSubmitAttempted] = useState(false);
+
+  const [showAddMoney, setShowAddMoney] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const isEditMode = !!initial;
 
@@ -71,6 +80,13 @@ export default function GenericForm<T extends BaseRecord>({
     field: FieldConfig<T>,
     value: string,
   ): string | undefined {
+    const key = field.key as string;
+
+    // Skip validation for system locked customer fields
+    if (isCustomerFieldLocked(key)) {
+      return undefined;
+    }
+
     const isRequired = field.required !== false;
 
     if (isRequired && value.trim() === "") {
@@ -112,6 +128,7 @@ export default function GenericForm<T extends BaseRecord>({
     const errors: Record<string, string> = {};
     for (const field of fields) {
       const key = field.key as string;
+      if (isCustomerFieldLocked(key)) continue;
       const error = validateField(field, formState[key] ?? "");
       if (error) errors[key] = error;
     }
@@ -132,6 +149,10 @@ export default function GenericForm<T extends BaseRecord>({
 
   function handleChange(field: FieldConfig<T>, value: string) {
     const key = field.key as string;
+
+    if (isCustomerFieldLocked(field.key as string)) {
+      return;
+    }
 
     if (key === "status" && hasQuantityField) {
       if (value === "Out of Stock") {
@@ -224,6 +245,7 @@ export default function GenericForm<T extends BaseRecord>({
 
             {initial?.image || defaultImage ? (
               <img
+                draggable={false}
                 src={initial?.image ?? defaultImage}
                 alt="preview"
                 className="h-40 w-40 rounded-xl object-cover"
@@ -244,6 +266,37 @@ export default function GenericForm<T extends BaseRecord>({
               {fields.map((field) => {
                 const key = field.key as string;
                 const isRequired = field.required !== false;
+
+                if (key === "wallet" && isEditMode) {
+                  return (
+                    <div key={key} className="flex flex-col gap-2">
+                      <div>
+                        <label htmlFor={"wallet"} className={labelClass}>
+                          Wallet
+                        </label>
+                        <input
+                          className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-2.5 text-sm text-gray-400 focus:outline-none"
+                          type="number"
+                          disabled
+                          id="wallet"
+                          name="wallet"
+                          value={formState[key] ?? "0"}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        className="w-fit cursor-pointer self-end rounded-lg bg-green-500 px-3 py-2 text-sm font-semibold text-white hover:bg-green-600"
+                        onClick={() => {
+                          setSelectedUserId(initial?._id);
+                          setShowAddMoney(true);
+                        }}
+                      >
+                        ₹ Add Money
+                      </button>
+                    </div>
+                  );
+                }
 
                 return (
                   <div key={key}>
@@ -275,10 +328,12 @@ export default function GenericForm<T extends BaseRecord>({
                       (() => {
                         const isQtyLocked =
                           key === "quantity" && quantityIsLocked;
+                        const isCustomerLocked = isCustomerFieldLocked(key);
+                        const isLocked = isQtyLocked || isCustomerLocked;
                         return (
                           <input
                             className={
-                              isQtyLocked
+                              isLocked
                                 ? "w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-2.5 text-sm text-gray-400 focus:outline-none"
                                 : inputClass(key)
                             }
@@ -286,7 +341,7 @@ export default function GenericForm<T extends BaseRecord>({
                             type={field.type}
                             name={field.label}
                             id={field.label}
-                            disabled={isQtyLocked}
+                            disabled={isLocked}
                             min={
                               key === "quantity"
                                 ? isQtyLocked
@@ -375,6 +430,12 @@ export default function GenericForm<T extends BaseRecord>({
           </form>
         </div>
       </div>
+      {showAddMoney && selectedUserId && (
+        <AddMoneyModal
+          userId={selectedUserId}
+          onClose={() => setShowAddMoney(false)}
+        />
+      )}
     </div>
   );
 }

@@ -19,6 +19,12 @@ export const MSG = {
     FETCHED: "user details fetched successfully",
     CREATED: "User created successfully",
   },
+  CUSTOMERS:{
+    FETCHED: "Customers fetched successfully",
+    UPDATED: "Customer updated successfully",
+    NOT_FOUND: "Customer not found",
+    DELETED: "Customer deleted successfully"
+  },
   ITEM: {
     EXISTS: "Item already exists",
     CREATED: "item created successfully",

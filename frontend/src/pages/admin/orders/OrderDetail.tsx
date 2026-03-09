@@ -62,6 +62,7 @@ const OrderDetail = ({ order, onPrintInvoice, onConfirm, onReject }: any) => {
               className="flex items-center gap-3 rounded-lg border border-gray-300 p-2"
             >
               <img
+                draggable="false"
                 src={item.image}
                 alt={item.name}
                 className="h-12 w-12 shrink-0 rounded-lg object-cover"

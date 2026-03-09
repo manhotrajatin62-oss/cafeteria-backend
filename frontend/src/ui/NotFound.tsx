@@ -8,7 +8,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-full w-full items-center justify-center">
       <div className="flex flex-col items-center gap-4">
-        <img className="w-100" src={notFound} alt="not-found" />
+        <img draggable="false" className="w-100" src={notFound} alt="not-found" />
 
         <button
           onClick={() => navigate("/")}

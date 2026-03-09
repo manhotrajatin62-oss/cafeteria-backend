@@ -13,6 +13,7 @@ import walletRoutes from "./routes/wallet.routes.ts";
 import categoryRoutes from "./routes/category.routes.ts";
 import menuRoutes from "./routes/menu.routes.ts";
 import analyticsRoutes from "./routes/analytics.routes.ts";
+import customersRoutes from "./routes/customers.routes.ts";
 import {startDailyReset} from "./utils/resetCategories.ts"
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes);
+app.use("/api", customersRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api", orderRoutes)
 app.use("/api/items", itemRoutes);

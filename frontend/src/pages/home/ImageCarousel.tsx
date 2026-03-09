@@ -52,6 +52,7 @@ const ImageCarousel = () => {
             <div className="relative h-100 w-full">
               {/* Background Image */}
               <img
+                draggable="false"
                 src={slide.image}
                 alt={slide.title}
                 className="h-full w-full object-cover"

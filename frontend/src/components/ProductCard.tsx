@@ -6,6 +6,7 @@ const ProductCard = () => {
     <section className="flex w-fit flex-col gap-4 rounded-lg border border-gray-300 p-4 shadow-md shadow-gray-300">
       <div className="h-40 w-50 overflow-hidden rounded-lg">
         <img
+          draggable={false}
           src={food}
           className="h-full w-full object-cover"
           alt="product-image"

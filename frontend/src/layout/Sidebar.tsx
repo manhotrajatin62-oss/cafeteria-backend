@@ -85,7 +85,7 @@ const Sidebar = () => {
     >
       {/* brand logo */}
       <div className="relative flex items-center gap-4 border-b border-gray-300 p-3">
-        <img className="w-8 shrink-0" src={brandLogo} alt="brand-logo" />
+        <img draggable={false} className="w-8 shrink-0" src={brandLogo} alt="brand-logo" />
 
         <h1
           className={`text-xl font-bold whitespace-nowrap text-black transition-all duration-200 ${hideSidebar ? "w-0 opacity-0" : "w-auto opacity-100"} `}

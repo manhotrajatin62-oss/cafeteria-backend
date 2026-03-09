@@ -19,6 +19,7 @@ const productColumns: TableColumn<Product>[] = [
     cell: (row) => (
       <div className="flex items-center gap-3 py-2">
         <img
+          draggable="false"
           src={food}
           alt={row.name}
           className="h-10 w-10 shrink-0 rounded-lg object-cover"
