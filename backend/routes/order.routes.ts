@@ -16,11 +16,11 @@ router.post("/checkout", checkout);
 router.post("/admin/checkout", authorize("admin"), adminCheckout);
 
 router.patch(
-  "/admin/orders/:orderId/confirm",
+  "/admin/:orderId/confirm",
   authorize("admin"),
   confirmOrder,
 );
 
-router.patch("/admin/orders/:orderId/reject", authorize("admin"), rejectOrder);
+router.patch("/admin/:orderId/reject", authorize("admin"), rejectOrder);
 
 export default router;

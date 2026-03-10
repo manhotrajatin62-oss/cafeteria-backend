@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.use(authenticate, authorize("admin"));
 
-router.get("/customers", getCustomers);
-router.patch("/customers/:id", updateCustomerInfo);
-router.delete("/customers/:id", deleteCustomer);
+router.get("/", getCustomers);
+router.patch("/:id", updateCustomerInfo);
+router.delete("/:id", deleteCustomer);
 
 export default router;

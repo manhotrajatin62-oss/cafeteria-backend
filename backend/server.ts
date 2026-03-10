@@ -4,17 +4,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import helmet from "helmet";
-
-import authRoutes from "./routes/auth.routes.ts";
-import cartRoutes from "./routes/cart.routes.ts";
-import orderRoutes from "./routes/order.routes.ts";
-import itemRoutes from "./routes/item.routes.ts";
-import walletRoutes from "./routes/wallet.routes.ts";
-import categoryRoutes from "./routes/category.routes.ts";
-import menuRoutes from "./routes/menu.routes.ts";
-import analyticsRoutes from "./routes/analytics.routes.ts";
-import customersRoutes from "./routes/customers.routes.ts";
-import {startDailyReset} from "./utils/resetCategories.ts"
+import appRouter from "./routes/routes.ts";
+import { startDailyReset } from "./utils/resetCategories.ts";
 
 dotenv.config();
 
@@ -27,15 +18,7 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 
-app.use("/api/auth", authRoutes);
-app.use("/api", customersRoutes);
-app.use("/api/cart", cartRoutes);
-app.use("/api", orderRoutes)
-app.use("/api/items", itemRoutes);
-app.use("/api/category", categoryRoutes);
-app.use("/api/wallet", walletRoutes);
-app.use("/api/menu", menuRoutes);
-app.use("/api/admin/analytics", analyticsRoutes)
+app.use("/api", appRouter);
 
 connectToDb();
 startDailyReset();
