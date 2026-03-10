@@ -74,6 +74,8 @@ export const MSG = {
     MONEY_ADDED: "money added successfully",
     CREDIT_LIMIT_CROSSED: "Credit limit exceeded. Max allowed pending is ₹500",
     FETCHED: "wallet details fetched successfully",
+    CREDIT_HISTORY: "Wallet credit history fetched",
+    CREDIT_HISTORY_NOT_FOUND: "No wallet credit history found"
   },
   MENU: {
     FETCHED: "menu fetched successfully",

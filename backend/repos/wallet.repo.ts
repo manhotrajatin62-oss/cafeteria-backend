@@ -13,8 +13,16 @@ const createWalletHistory = async (data: any) => {
   return WalletHistory.create(data);
 };
 
+const findWalletCredits = async () => {
+  return WalletHistory.find({ type: "credit" })
+    .populate("user", "name")
+    .populate("wallet", "balance")
+    .sort({ createdAt: -1 });
+};
+
 export const walletRepo = {
   findOne,
   createWalletHistory,
   findHistory,
+  findWalletCredits
 };

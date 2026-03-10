@@ -54,7 +54,35 @@ const getWalletDetails = async (userId: any) => {
   return { wallet, history };
 };
 
+const getWalletCredits = async () => {
+  const credits = await walletRepo.findWalletCredits();
+
+  if (!credits.length) {
+    throw new Error(MSG.WALLET.CREDIT_HISTORY_NOT_FOUND);
+  }
+
+  return credits.map((tx: any) => {
+    const dateObj = new Date(tx.createdAt);
+
+    const date = dateObj.toLocaleDateString("en-GB");
+    const time = dateObj.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }).toUpperCase();
+
+    return {
+      userName: tx.user?.name,
+      creditedAmount: tx.amount,
+      walletBalance: tx.wallet?.balance,
+      date,
+      time,
+    };
+  });
+};
+
 export const walletService = {
   addMoney,
   getWalletDetails,
+  getWalletCredits,
 };

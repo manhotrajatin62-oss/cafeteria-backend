@@ -39,8 +39,8 @@ export type View = "table" | "add" | "edit";
 
 export interface WalletRecord {
   id: number;
-  employeeName: string;
-  payment: number;
+  userName: string;
+  creditedAmount: number;
   walletBalance: number;
   date: string;
   time: string;

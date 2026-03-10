@@ -23,3 +23,13 @@ export const getWalletDetails = async (req: any, res: any) => {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
 };
+
+export const getWalletCredits = async (_: any, res: any) => {
+  try {
+    const credits = await walletService.getWalletCredits();
+
+    sendResponse(res, STATUS.OK, MSG.WALLET.CREDIT_HISTORY, credits);
+  } catch (err: any) {
+    sendResponse(res, STATUS.BAD_REQUEST, err.message);
+  }
+};

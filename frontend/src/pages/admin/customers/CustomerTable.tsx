@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { Customer, FieldConfig, View, WalletRecord } from "../types.ts";
-import { WALLET_DATA } from "../data.ts";
 import GenericForm from "../../../components/GenericForm.tsx";
 import DeleteModal from "../../../components/DeleteModal.tsx";
 import { FaTrash } from "react-icons/fa";
@@ -16,7 +15,8 @@ import {
 } from "../../../api/customersApi.ts";
 import Loader from "../../../ui/Loader.tsx";
 import { registerUser } from "../../../api/authApi.ts";
-import {registerSchema} from "../../../../../backend/validations/authValidation.ts"
+import { registerSchema } from "../../../../../backend/validations/authValidation.ts";
+import { getWalletCredits } from "../../../api/walletApi.ts";
 
 const customStyles = {
   headRow: {
@@ -103,19 +103,19 @@ const walletColumns: TableColumn<WalletRecord>[] = [
   },
   {
     name: "Name",
-    selector: (r) => r.employeeName,
+    selector: (r) => r.userName,
     sortable: true,
     center: true,
-    cell: (r) => (
-      <span className="text-sm font-semibold">{r.employeeName}</span>
-    ),
+    cell: (r) => <span className="text-sm font-semibold">{r.userName}</span>,
   },
   {
     name: "Payment",
-    selector: (r) => r.payment,
+    selector: (r) => r.creditedAmount,
     sortable: true,
     center: true,
-    cell: (r) => <span className="text-sm font-semibold">{r.payment}</span>,
+    cell: (r) => (
+      <span className="text-sm font-semibold">{r.creditedAmount}</span>
+    ),
   },
   {
     name: "Wallet Balance",
@@ -150,6 +150,7 @@ export default function CustomerTable() {
   const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [walletSearch, setWalletSearch] = useState("");
+  const [walletData, setWalletData] = useState<any>([]);
   const [activeTab, setActiveTab] = useState<"userList" | "walletHistory">(
     "userList",
   );
@@ -337,16 +338,25 @@ export default function CustomerTable() {
   })();
 
   const filteredWallet = (() => {
+    if (!walletData) return;
     const q = walletSearch.toLowerCase().trim();
-    if (!q) return WALLET_DATA;
-    return WALLET_DATA.filter((r) => r.employeeName.toLowerCase().includes(q));
+    if (!q) return walletData;
+    return walletData.filter((r: any) => r.userName.toLowerCase().includes(q));
   })();
 
   useEffect(() => {
     const fetchCustomers = async () => {
-      try {
-        setLoading(true);
-        const res = await fetchAllCustomers();
+      setLoading(true);
+
+      const [customersRes, walletRes] = await Promise.allSettled([
+        fetchAllCustomers(),
+        getWalletCredits(),
+      ]);
+
+      // Handle customers API
+      if (customersRes.status === "fulfilled") {
+        const res = customersRes.value;
+
         const formatted = res.data.data.map((u: any) => ({
           _id: u._id,
           name: u.name,
@@ -358,14 +368,23 @@ export default function CustomerTable() {
         }));
 
         setRows(formatted);
-        setLoading(false);
-      } catch (error: any) {
-        setLoading(false);
+      } else {
         toast.error(
-          error.response?.data?.message ||
-            "Error occurred while fetching customers",
+          customersRes?.reason?.response?.data?.message || "Failed to fetch customers",
         );
       }
+
+      // Handle wallet credits API
+      if (walletRes.status === "fulfilled") {
+        setWalletData(walletRes.value.data.data);
+      } else {
+        toast.error(
+          walletRes?.reason?.response?.data?.message ||
+            "Failed to fetch wallet history",
+        );
+      }
+
+      setLoading(false);
     };
 
     fetchCustomers();
