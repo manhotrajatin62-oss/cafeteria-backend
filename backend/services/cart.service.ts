@@ -25,12 +25,12 @@ export const addToCart = async (data: any, userId: any) => {
   const category = await cartRepo.findCategoryId(categoryId);
   if (!category) throw new Error(MSG.CATEGORY.NOT_FOUND);
 
-  if (
-    !category.startTime ||
-    !category.endTime ||
-    !isWithinTime(category.startTime, category.endTime)
-  )
-    throw new Error(MSG.CATEGORY.TIME_OVER);
+  // if (
+  //   !category.startTime ||
+  //   !category.endTime ||
+  //   !isWithinTime(category.startTime, category.endTime)
+  // )
+  //   throw new Error(MSG.CATEGORY.TIME_OVER);
 
   const itemExistsInCategory = category.items.some(
     (i: any) => i.toString() === itemId,

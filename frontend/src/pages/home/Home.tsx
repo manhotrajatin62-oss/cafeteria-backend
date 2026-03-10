@@ -8,6 +8,8 @@ import CategoryCard from "../../components/CategoryCard";
 import ProductCard from "../../components/ProductCard";
 import { getTodayMenu } from "../../api/menuApi.ts";
 import Loader from "../../ui/Loader.tsx";
+import { getCart } from "../../api/cartApi.ts";
+import toast from "react-hot-toast";
 
 const categoryIcons: Record<string, any> = {
   Breakfast: BsFillCupHotFill,
@@ -27,32 +29,51 @@ function formatTime(time: string) {
 }
 
 const Home = () => {
-  const { showCart } = useUser();
+  const { showCart, setCartItems } = useUser();
 
   const [categories, setCategories] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMenu = async () => {
-      try {
-        const res = await getTodayMenu();
+    const fetchData = async () => {
+      setLoading(true);
 
-        const data = res.data.data;
+      const [menuResult, cartResult] = await Promise.allSettled([
+        getTodayMenu(),
+        getCart(),
+      ]);
 
-        setCategories(data);
+      // Menu response
+      if (menuResult.status === "fulfilled") {
+        const menuData = menuResult.value.data.data;
 
-        if (data.length > 0) {
-          setActiveCategory(data[0]);
+        setCategories(menuData);
+
+        if (menuData.length > 0) {
+          setActiveCategory(menuData[0]);
         }
-
-        setLoading(false);
-      } catch {
-        setLoading(false);
+      } else {
+        toast.error(
+          menuResult?.reason?.response?.data?.message ||
+            "Error occurred while fetching menu",
+        );
       }
+
+      // Cart response
+      if (cartResult.status === "fulfilled") {
+        setCartItems(cartResult.value.data.data.items);
+      } else {
+        toast.error(
+          cartResult.reason?.response?.data?.message ||
+            "Error occurred while fetching cart",
+        );
+      }
+
+      setLoading(false);
     };
 
-    fetchMenu();
+    fetchData();
   }, []);
 
   return (
@@ -118,7 +139,11 @@ const Home = () => {
               </p>
             ) : (
               activeCategory?.items?.map((item: any) => (
-                <ProductCard key={item._id} item={item} />
+                <ProductCard
+                  key={item._id}
+                  categoryId={activeCategory._id}
+                  item={item}
+                />
               ))
             )}
           </div>
