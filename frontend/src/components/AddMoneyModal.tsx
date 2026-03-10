@@ -68,34 +68,38 @@ export default function AddMoneyModal({ userId, onClose }: Props) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-6 text-xl font-bold text-gray-800">
-          Add Money to Wallet
-        </h2>
+        <form onSubmit={(e: any) => e.preventDefault()}>
+          <h2 className="mb-6 text-xl font-bold text-gray-800">
+            Add Money to Wallet
+          </h2>
 
-        <input
-          type="number"
-          placeholder="Enter amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="focus:border-orange mb-6 w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none"
-        />
+          <input
+            type="number"
+            placeholder="Enter amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="focus:border-orange mb-6 w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none"
+          />
 
-        <div className="flex w-full gap-4">
-          <button
-            onClick={() => handleClose(onClose)}
-            className="flex-1 cursor-pointer rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-gray-700 active:scale-95"
-          >
-            Cancel
-          </button>
+          <div className="flex w-full gap-4">
+            <button
+              type="button"
+              onClick={() => handleClose(onClose)}
+              className="flex-1 cursor-pointer rounded-xl bg-gray-900 py-3 text-sm font-semibold text-white shadow transition-all duration-150 hover:bg-gray-700 active:scale-95"
+            >
+              Cancel
+            </button>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="bg-orange hover:bg-dark-orange flex-1 cursor-pointer rounded-xl py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95 disabled:opacity-60"
-          >
-            {loading ? "Adding..." : "Add Money"}
-          </button>
-        </div>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="bg-orange hover:bg-dark-orange flex-1 cursor-pointer rounded-xl py-3 text-sm font-semibold text-white shadow transition-all duration-150 active:scale-95 disabled:opacity-60"
+            >
+              {loading ? "Adding..." : "Add Money"}
+            </button>
+          </div>
+        </form>
       </button>
     </button>
   );
