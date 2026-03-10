@@ -3,6 +3,7 @@ import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
 import BackButton from "../ui/BackButton.tsx";
 import { BiImageAdd } from "react-icons/bi";
 import AddMoneyModal from "./AddMoneyModal.tsx";
+import type { ZodSchema } from "zod";
 
 interface GenericFormProps<T extends BaseRecord> {
   readonly title: string;
@@ -11,6 +12,7 @@ interface GenericFormProps<T extends BaseRecord> {
   readonly defaultImage: string;
   readonly onSubmit: (data: Omit<T, "_id">) => void;
   readonly onBack: () => void;
+  readonly schema?: ZodSchema;
 }
 
 export default function GenericForm<T extends BaseRecord>({
@@ -20,6 +22,7 @@ export default function GenericForm<T extends BaseRecord>({
   defaultImage,
   onSubmit,
   onBack,
+  schema,
 }: GenericFormProps<T>) {
   const customerLockedFields = new Set(["orders", "pendingBill", "wallet"]);
 
@@ -93,21 +96,27 @@ export default function GenericForm<T extends BaseRecord>({
       return `${field.label.replace(" :", "").replace(":", "").trim()} is required`;
     }
 
-    if (field.type === "number" && value.trim() !== "") {
-      const num = Number.parseFloat(value);
+    if (field.type === "number") {
+      if (value.trim() === "") return;
+
+      const num = Number(value);
+
+      if (Number.isNaN(num)) {
+        return `${field.label.replace(" :", "").replace(":", "").trim()} must be a valid number`;
+      }
+
       if ((field.key as string) === "quantity") {
         const isOutOfStock = formState["status"] === "Out of Stock";
 
         if (isOutOfStock) {
           if (num !== 0) return "Out of Stock items must have quantity 0.";
         } else {
-          if (Number.isNaN(num) || num <= 0) {
+          if (!Number.isInteger(num) || num < 1 || num > 50) {
             return "Quantity must be between 1 and 50.";
           }
-          if (num > 50) return "Quantity cannot exceed 50.";
         }
       } else {
-        if (Number.isNaN(num) || num <= 0) {
+        if (num <= 0) {
           return `${field.label.replace(" :", "").replace(":", "").trim()} must be greater than 0`;
         }
       }
@@ -208,7 +217,28 @@ export default function GenericForm<T extends BaseRecord>({
     for (const field of fields) {
       const key = field.key as string;
       const raw = formState[key] ?? "";
-      result[key] = field.type === "number" ? Number.parseFloat(raw) || 0 : raw;
+      result[key] = field.type === "number" ? Number.parseFloat(raw) : raw;
+    }
+
+    if (schema) {
+      const parsed = schema.safeParse(result);
+
+      if (!parsed.success) {
+        const zodErrors: Record<string, string> = {};
+
+        for (const issue of parsed.error.issues) {
+          const field = issue.path[0] as string;
+          zodErrors[field] = issue.message;
+        }
+
+        setErrors(zodErrors);
+
+        const touchedFields: Record<string, boolean> = {};
+        Object.keys(zodErrors).forEach((k) => (touchedFields[k] = true));
+        setTouched((prev) => ({ ...prev, ...touchedFields }));
+
+        return;
+      }
     }
 
     onSubmit(result as Omit<T, "_id">);
@@ -358,7 +388,13 @@ export default function GenericForm<T extends BaseRecord>({
                                   : "50"
                                 : undefined
                             }
-                            step={field.type === "number" ? "any" : undefined}
+                            step={
+                              key === "quantity"
+                                ? "1"
+                                : field.type === "number"
+                                  ? "any"
+                                  : undefined
+                            }
                             value={isQtyLocked ? "0" : (formState[key] ?? "")}
                             onChange={(e) =>
                               handleChange(field, e.target.value)

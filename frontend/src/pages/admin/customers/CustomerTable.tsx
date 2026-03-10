@@ -16,6 +16,7 @@ import {
 } from "../../../api/customersApi.ts";
 import Loader from "../../../ui/Loader.tsx";
 import { registerUser } from "../../../api/authApi.ts";
+import {registerSchema} from "../../../../../backend/validations/authValidation.ts"
 
 const customStyles = {
   headRow: {
@@ -276,19 +277,7 @@ export default function CustomerTable() {
     }
 
     try {
-      const res = await registerUser(data.name, data.email);
-
-      const u = res.data.data;
-
-      const formatted = {
-        _id: u._id,
-        name: u.name,
-        email: u.email,
-        image: user,
-        orders: 0,
-        wallet: 0,
-        pendingBill: 0,
-      };
+      await registerUser(data.name, data.email);
 
       toast.success("Customer added successfully");
     } catch (error: any) {
@@ -393,6 +382,7 @@ export default function CustomerTable() {
             defaultImage={user}
             onBack={() => setView("table")}
             onSubmit={handleAddSubmit}
+            schema={registerSchema}
           />
         </div>
       </div>
@@ -414,6 +404,7 @@ export default function CustomerTable() {
               setView("table");
             }}
             onSubmit={handleEditSubmit}
+            schema={registerSchema}
           />
         </div>
       </div>
@@ -433,7 +424,7 @@ export default function CustomerTable() {
         </button>
       </div>
 
-      <div className="mx-6 mb-6 h-100 rounded-lg border border-gray-300 bg-white">
+      <div className="mx-6 mb-6 min-h-100 rounded-lg border border-gray-300 bg-white">
         {/* Tab switcher */}
         <div className="flex gap-1 border-b border-gray-100 px-6 pt-4">
           <button

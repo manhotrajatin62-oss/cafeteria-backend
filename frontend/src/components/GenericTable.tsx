@@ -10,6 +10,7 @@ import { IoClose, IoSearch } from "react-icons/io5";
 import { addProduct, deleteProduct, editProduct, getProducts } from "../api/ProductApi.ts";
 import Loader from "../ui/Loader.tsx";
 import { useAdmin } from "../store/useAdmin.tsx";
+import {createItemSchema} from "../../../backend/validations/itemValidation.ts"
 
 interface GenericTableProps<T extends BaseRecord> {
   readonly title: string;
@@ -273,6 +274,7 @@ export default function GenericTable<T extends BaseRecord>({
         defaultImage={defaultImage}
         onBack={() => setView("table")}
         onSubmit={handleAddSubmit}
+        schema={createItemSchema}
       />
     );
   }
@@ -289,6 +291,7 @@ export default function GenericTable<T extends BaseRecord>({
           setView("table");
         }}
         onSubmit={handleEditSubmit}
+        schema={createItemSchema}
       />
     );
   }
