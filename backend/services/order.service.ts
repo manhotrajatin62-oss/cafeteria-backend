@@ -1,5 +1,15 @@
 import { MSG } from "../constants/messages.ts";
 import { orderRepo } from "../repos/order.repo.ts";
+import { io } from "../server.ts";
+
+const formatDate = (date: Date) => {
+  const d = new Date(date);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
+
+  return `${day}-${month}-${year}`;
+};
 
 const calculateTotalAmount = (cart: any) => {
   return cart.items.reduce(
@@ -66,7 +76,7 @@ const checkout = async (userId: any) => {
 
   const paymentStatus = await handleWalletPayment(wallet, userId, totalAmount);
 
-  await orderRepo.createOrder({
+  const order = await orderRepo.createOrder({
     user: userId,
     items: cart.items.map((i: any) => ({
       item: i.item._id,
@@ -79,6 +89,8 @@ const checkout = async (userId: any) => {
     category: cart.category,
     orderStatus: "pending",
   });
+
+  io.emit("order:new", order);
 
   await orderRepo.deleteOne({ user: userId });
 };
@@ -105,6 +117,11 @@ const confirmOrder = async (orderId: any) => {
 
   order.orderStatus = "confirmed";
   await order.save();
+
+  io.emit("order:update", {
+    id: order._id,
+    status: "confirmed",
+  });
 
   return order;
 };
@@ -149,7 +166,32 @@ const rejectOrder = async (orderId: any) => {
   order.orderStatus = "rejected";
   await order.save();
 
+  io.emit("order:update", {
+    id: order._id,
+    status: "rejected",
+  });
+
   return order;
+};
+
+const listOrders = async () => {
+  const orders = await orderRepo.findAllOrders();
+
+  return orders.map((order: any) => ({
+    id: order._id,
+    user: order.user?.name,
+    totalAmount: order.totalAmount,
+    paymentStatus: order.paymentStatus,
+    status: order.orderStatus,
+    category: order.category,
+    date: formatDate(order.createdAt),
+
+    items: order.items.map((i: any) => ({
+      name: i.item?.name,
+      price: i.price,
+      quantity: i.quantity,
+    })),
+  }));
 };
 
 const adminCheckout = async (userId: any) => {
@@ -198,4 +240,5 @@ export const orderService = {
   adminCheckout,
   confirmOrder,
   rejectOrder,
+  listOrders,
 };

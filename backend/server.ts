@@ -6,6 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import appRouter from "./routes/routes.ts";
 import { startDailyReset } from "./utils/resetCategories.ts";
+import { Server } from "socket.io";
 
 dotenv.config();
 
@@ -25,6 +26,16 @@ startDailyReset();
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log("server is running on port", port);
+});
+
+export const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("client connected:", socket.id);
 });

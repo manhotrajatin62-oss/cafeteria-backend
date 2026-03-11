@@ -58,28 +58,28 @@ const historyColumns: TableColumn<Order>[] = [
     selector: (r) => r.orderNumber,
     sortable: true,
     center: true,
-    cell: (r) => <span className="font-semibold">{r.orderNumber}</span>,
+    cell: (r) => <span className="font-semibold">{r.id}</span>,
   },
   {
     name: "Customer",
-    selector: (r) => r.customer,
+    selector: (r) => r.user,
     sortable: true,
     center: true,
-    cell: (r) => <span className="font-semibold">{r.customer}</span>,
+    cell: (r) => <span className="font-semibold">{r.user}</span>,
   },
   {
     name: "Payment",
-    selector: (r) => r.payment,
+    selector: (r) => r.paymentStatus,
     center: true,
-    cell: (r) => <span className="font-semibold">{r.payment}</span>,
+    cell: (r) => <span className="font-semibold">{r.paymentStatus}</span>,
   },
   {
     name: "Total",
-    selector: (r) => r.total,
+    selector: (r) => r.totalAmount,
     sortable: true,
     center: true,
     cell: (r) => (
-      <span className="font-medium text-gray-800">Rs. {r.total}</span>
+      <span className="font-medium text-gray-800">₹ {r.totalAmount}</span>
     ),
   },
   {

@@ -55,6 +55,7 @@ export const MSG = {
     PROCESSED: "Order already processed",
     PLACED: "Order placed successfully",
     CHECKOUT_SUCCESS: "Checkout Successful",
+    FETCHED: "Orders fetched successfully"
   },
   CATEGORY: {
     FETCHED: "Category data fetched successfully",

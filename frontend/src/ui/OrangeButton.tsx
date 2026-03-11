@@ -1,8 +1,9 @@
-const OrangeButton = ({ text, onClick }: any) => {
+const OrangeButton = ({ text, onClick, disabled }: any) => {
   return (
     <button
+      disabled={disabled}
       onClick={onClick}
-      className="bg-orange w-full cursor-pointer rounded-lg py-3 text-sm font-semibold text-white transition-colors duration-100 ease-in hover:bg-dark-orange"
+      className="bg-orange disabled:bg-light-orange hover:bg-dark-orange w-full cursor-pointer rounded-lg py-3 text-sm font-semibold text-white transition-colors duration-100 ease-in disabled:cursor-not-allowed"
     >
       {text}
     </button>

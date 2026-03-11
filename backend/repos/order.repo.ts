@@ -45,6 +45,13 @@ const findOrderById = async (id: any) => {
   return Order.findById(id);
 };
 
+const findAllOrders = async () => {
+  return Order.find({})
+    .populate("user", "name")
+    .populate("items.item", "name price")
+    .sort({ createdAt: -1 });
+};
+
 export const orderRepo = {
   findId,
   findOne,
@@ -55,5 +62,6 @@ export const orderRepo = {
   createOrder,
   deleteOne,
   createWalletHistory,
-  findOrderById
+  findOrderById,
+  findAllOrders
 };

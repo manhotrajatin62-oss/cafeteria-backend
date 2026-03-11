@@ -5,6 +5,8 @@ import { useUser } from "../../store/useUser";
 import { MdDelete } from "react-icons/md";
 import { useState } from "react";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { checkout } from "../../api/orderApi";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const {
@@ -15,9 +17,12 @@ const Cart = () => {
     increment,
     decrement,
     clearCartAction,
+    setCartItems,
+    setQtyMap,
   } = useUser();
 
   const [showClearCart, setShowClearCart] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // items visible in cart container
   const visibleItems = cartItems?.filter(
@@ -29,6 +34,21 @@ const Cart = () => {
     (acc: number, i: any) => acc + i.item.price * (qtyMap[i.item._id] || 0),
     0,
   );
+
+  const handleCheckout = async () => {
+    try {
+      setLoading(true);
+      await checkout();
+      toast.success("Order placed successfully");
+      setCartItems([]);
+      setQtyMap({});
+      setLoading(false);
+    } catch (error: any) {
+      setLoading(false);
+      console.log(error)
+      toast.error(error.response?.data?.message || "Failed to place order");
+    }
+  };
 
   return (
     <>
@@ -143,7 +163,11 @@ const Cart = () => {
               </thead>
             </table>
 
-            <OrangeButton text={"Place Order"} />
+            <OrangeButton
+            disabled={loading}
+              onClick={handleCheckout}
+              text={loading ? "Placing Order..." : "Place Order"}
+            />
           </div>
         )}
       </section>

@@ -1,4 +1,5 @@
 import OrangeButton from "../../../ui/OrangeButton";
+import food from "../../../assets/food.jpg"
 
 const statusColor: Record<string, string> = {
   confirmed: "text-green-500",
@@ -7,8 +8,8 @@ const statusColor: Record<string, string> = {
 };
 
 const paymentColor: Record<string, string> = {
-  Paid: "text-green-500",
-  Pending: "text-red-500",
+  paid: "text-green-500",
+  pending: "text-red-500",
 };
 
 function StatusBadge({ status }: any) {
@@ -20,14 +21,13 @@ function StatusBadge({ status }: any) {
 }
 
 const OrderDetail = ({ order, onPrintInvoice, onConfirm, onReject }: any) => {
-
-  console.log(order)
+console.log(order)
   return (
     <div className="flex h-full flex-col">
 
       {/* order id and status */}
       <div className="mb-6 flex items-center justify-between border-b border-b-gray-300 pb-4">
-        <h2 className="text-xl font-bold text-gray-800">Order #{order.orderNumber}</h2>
+        <h2 className="text-xl font-bold text-gray-800">Order #{order.id}</h2>
         <StatusBadge status={order.status} />
       </div>
 
@@ -35,15 +35,15 @@ const OrderDetail = ({ order, onPrintInvoice, onConfirm, onReject }: any) => {
         <p className="mb-3 text-sm font-semibold text-black">Details</p>
         <div className="grid grid-cols-3 gap-2 text-center">
           {[
-            { label: "Customer", value: order.customer },
-            { label: "Payment", value: order.payment },
+            { label: "Customer", value: order.user },
+            { label: "Payment", value: order.paymentStatus },
             { label: "Date", value: order.date },
           ].map(({ label, value }) => (
             <div key={label}>
               <p className="mb-1 text-sm font-semibold text-gray-400">{label}</p>
               <p
                 className={`text-sm font-semibold ${
-                  label === "Payment" ? (paymentColor[order.payment] ?? "text-gray-800") : "text-gray-800"
+                  label === "Payment" ? (paymentColor[order.paymentStatus] ?? "text-gray-800") : "text-gray-800"
                 }`}
               >
                 {value}
@@ -63,7 +63,7 @@ const OrderDetail = ({ order, onPrintInvoice, onConfirm, onReject }: any) => {
             >
               <img
                 draggable="false"
-                src={item.image}
+                src={food}
                 alt={item.name}
                 className="h-12 w-12 shrink-0 rounded-lg object-cover"
               />
@@ -72,7 +72,7 @@ const OrderDetail = ({ order, onPrintInvoice, onConfirm, onReject }: any) => {
                 <span className="ml-2 text-sm">x {item.quantity}</span>
               </span>
               <span className="pr-4 text-sm font-semibold text-orange-400">
-                Rs. {item.price.toFixed(2)}
+                ₹ {item.price.toFixed(2)}
               </span>
             </div>
           ))}

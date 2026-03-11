@@ -38,3 +38,12 @@ export const rejectOrder = async (req: any, res: any) => {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
 };
+
+export const listOrders = async (_: any, res: any) => {
+  try {
+    const orders = await orderService.listOrders();
+    sendResponse(res, STATUS.OK, MSG.ORDER.FETCHED, orders);
+  } catch (err: any) {
+    sendResponse(res, STATUS.BAD_REQUEST, err.message);
+  }
+};

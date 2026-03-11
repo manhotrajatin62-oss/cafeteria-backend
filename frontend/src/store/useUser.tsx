@@ -17,6 +17,8 @@ type UserStore = {
 
   qtyMap: Record<string, number>;
 
+  setQtyMap: (value: any) => void;
+
   addItem: (itemId: string) => void;
 
   toggleShowCart: (value: boolean) => void;
@@ -37,6 +39,10 @@ export const useUser = create<UserStore>((set, get) => ({
 
   cartItems: [],
   qtyMap: {},
+
+  setQtyMap: (value) => {
+    set({ qtyMap: value });
+  },
 
   addItem: (itemId) => {
     const { qtyMap } = get();

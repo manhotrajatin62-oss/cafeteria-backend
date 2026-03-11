@@ -15,8 +15,8 @@ const OrderCard = ({ order, selected, onClick }: any) => {
       }`}
     >
       <div className="mb-1 flex items-center justify-between">
-        <span className={`font-bold ${selected ? "text-white" : "text-gray-800"}`}>
-          Order #{order.orderNumber}
+        <span className={`font-bold w-50 truncate ${selected ? "text-white" : "text-gray-800"}`}>
+          Order #{order?.id}
         </span>
         <span
           className={`text-sm font-semibold ${
@@ -28,7 +28,7 @@ const OrderCard = ({ order, selected, onClick }: any) => {
       </div>
       <div className="flex items-center justify-end">
         <span className={`text-base font-bold ${selected ? "text-white" : "text-gray-800"}`}>
-          Rs. {order.total}
+          ₹ {order.totalAmount}
         </span>
       </div>
     </button>

@@ -13,9 +13,9 @@ export interface Order {
   date: string;
   table: number;
   guests: number;
-  customer: string;
-  payment: string;
+  user: string;
+  totalAmount: number;
   status: OrderStatus;
-  total: number;
+  paymentStatus: string;
   items: OrderItem[];
 }
