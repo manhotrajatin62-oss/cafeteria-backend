@@ -45,7 +45,9 @@ export function DeleteModal({
   itemName,
   onConfirm,
   onCancel,
+  entityName,
 }: {
+  readonly entityName: string;
   readonly itemName: string;
   readonly onConfirm: () => void;
   readonly onCancel: () => void;
@@ -89,7 +91,7 @@ export function DeleteModal({
           </svg>
         </div>
         <h2 className="mb-2 text-xl font-bold text-gray-800">
-          Delete This Item?
+          Delete This {entityName}?
         </h2>
         <p className="mb-8 text-sm text-gray-400">
           Are you sure, You want to delete{" "}
@@ -197,7 +199,7 @@ export function AddCategoryModal({
           <div className="mb-4">
             <label
               htmlFor="category"
-              className="mb-1.5 text-start block text-sm font-semibold text-gray-700"
+              className="mb-1.5 block text-start text-sm font-semibold text-gray-700"
             >
               Category Name <span className="text-red-400">*</span>
             </label>
@@ -245,7 +247,7 @@ export function AddCategoryModal({
           <div className="mb-6">
             <label
               htmlFor="end-time"
-              className="mb-1.5 text-start block text-sm font-semibold text-gray-700"
+              className="mb-1.5 block text-start text-sm font-semibold text-gray-700"
             >
               End Time <span className="text-red-400">*</span>
             </label>

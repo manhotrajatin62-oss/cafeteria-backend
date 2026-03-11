@@ -14,3 +14,7 @@ export const getCart = () => {
 export const updateCartQuantity = (data: {itemId: string, quantity: number}) => {
   return apiClient.patch("/cart/quantity", data);
 };
+
+export const clearCart = () => {
+  return apiClient.delete("/cart/clear");
+};

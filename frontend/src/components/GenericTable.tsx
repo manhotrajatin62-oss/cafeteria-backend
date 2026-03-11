@@ -2,15 +2,20 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { BaseRecord, FieldConfig } from "../pages/admin/types.ts";
-import DeleteModal from "./DeleteModal";
 import GenericForm from "./GenericForm";
 import { FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import { IoClose, IoSearch } from "react-icons/io5";
-import { addProduct, deleteProduct, editProduct, getProducts } from "../api/ProductApi.ts";
+import {
+  addProduct,
+  deleteProduct,
+  editProduct,
+  getProducts,
+} from "../api/ProductApi.ts";
 import Loader from "../ui/Loader.tsx";
 import { useAdmin } from "../store/useAdmin.tsx";
-import {createItemSchema} from "../../../backend/validations/itemValidation.ts"
+import { createItemSchema } from "../../../backend/validations/itemValidation.ts";
+import ConfirmationModal from "./ConfirmationModal.tsx";
 
 interface GenericTableProps<T extends BaseRecord> {
   readonly title: string;
@@ -100,8 +105,8 @@ export default function GenericTable<T extends BaseRecord>({
   type View = "table" | "add" | "edit";
 
   // states
-  const {rows, setRows} = useAdmin();
-  
+  const { rows, setRows } = useAdmin();
+
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<View>("table");
   const [deleteTarget, setDeleteTarget] = useState<T | null>(null);
@@ -356,9 +361,10 @@ export default function GenericTable<T extends BaseRecord>({
       </div>
 
       {deleteTarget && (
-        <DeleteModal
+        <ConfirmationModal
+          title="Delete This Item?"
+          message={"Are you sure you want to delete"}
           entityName={deleteTarget.name}
-          entityLabel={entityLabel}
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteTarget(null)}
         />

@@ -148,9 +148,16 @@ const deleteCartItem = async (id: any, userId: any) => {
   return cart;
 };
 
+const clearCart = async (id: any) => {
+  const cart = await cartRepo.findAndUpdate(id);
+
+  return cart;
+};
+
 export const cartService = {
   addToCart,
   updateQuantity,
   getCart,
-  deleteCartItem
+  deleteCartItem,
+  clearCart,
 };

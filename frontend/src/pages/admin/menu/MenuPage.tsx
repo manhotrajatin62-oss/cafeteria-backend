@@ -319,6 +319,7 @@ export default function MenuPage() {
       {deleteTarget && (
         <DeleteModal
           itemName={deleteTarget.name}
+          entityName="Item"
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteTarget(null)}
         />
@@ -327,6 +328,7 @@ export default function MenuPage() {
       {deleteCategoryTarget && (
         <DeleteModal
           itemName={deleteCategoryTarget.name}
+          entityName="Category"
           onConfirm={handleDeleteCategory}
           onCancel={() => setDeleteCategoryTarget(null)}
         />

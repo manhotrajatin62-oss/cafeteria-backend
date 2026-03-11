@@ -3,7 +3,7 @@ import Cart from "../models/Cart.ts";
 import Category from "../models/Category.ts";
 import Wallet from "../models/Wallet.ts";
 import Order from "../models/Order.ts";
-import WalletHistory from "../models/WalletHistory.ts"
+import WalletHistory from "../models/WalletHistory.ts";
 
 const findCategoryId = async (id: any) => {
   return Category.findById(id);
@@ -41,6 +41,14 @@ const createOrder = async (data: any) => {
   return Order.create(data);
 };
 
+const findAndUpdate = async (id: any) => {
+  return Cart.findOneAndUpdate(
+    { user: id },
+    { $set: { items: [] } },
+    { new: true },
+  );
+};
+
 export const cartRepo = {
   findId,
   findOne,
@@ -50,5 +58,6 @@ export const cartRepo = {
   findWallet,
   createOrder,
   deleteOne,
-  createWalletHistory
+  createWalletHistory,
+  findAndUpdate,
 };

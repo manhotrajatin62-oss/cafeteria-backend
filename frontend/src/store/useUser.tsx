@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { updateCartQuantity } from "../api/cartApi";
+import { clearCart, updateCartQuantity } from "../api/cartApi";
 import toast from "react-hot-toast";
 
 type CartItem = {
@@ -25,10 +25,11 @@ type UserStore = {
   setCartItems: (items: CartItem[]) => void;
 
   increment: (itemId: string) => void;
-  decrement: (itemId: string, itemName:string) => void;
+  decrement: (itemId: string, itemName: string) => void;
+  clearCartAction: () => Promise<void>;
 };
 
-const debounceTimers: Record<string, NodeJS.Timeout> = {};
+const debounceTimers: any = {};
 
 export const useUser = create<UserStore>((set, get) => ({
   showCart: false,
@@ -95,37 +96,51 @@ export const useUser = create<UserStore>((set, get) => ({
   },
 
   decrement: (itemId: string, itemName: string) => {
-  const { qtyMap } = get();
-  const qty = qtyMap[itemId];
+    const { qtyMap } = get();
+    const qty = qtyMap[itemId];
 
-  if (!qty) return;
+    if (!qty) return;
 
-  const newQty = qty <= 1 ? 0 : qty - 1;
+    const newQty = qty <= 1 ? 0 : qty - 1;
 
-  const newMap = { ...qtyMap };
+    const newMap = { ...qtyMap };
 
-  if (newQty === 0) {
-    delete newMap[itemId];
+    if (newQty === 0) {
+      delete newMap[itemId];
 
-    toast.success(`${itemName} removed from the cart`);
-  } else {
-    newMap[itemId] = newQty;
-  }
-
-  set({ qtyMap: newMap });
-
-  clearTimeout(debounceTimers[itemId]);
-
-  debounceTimers[itemId] = setTimeout(async () => {
-    try {
-      await updateCartQuantity({
-        itemId,
-        quantity: newQty,
-      });
-    } catch (err) {
-      console.error(err);
+      toast.success(`${itemName} removed from the cart`);
+    } else {
+      newMap[itemId] = newQty;
     }
-  }, 600);
-}
 
+    set({ qtyMap: newMap });
+
+    clearTimeout(debounceTimers[itemId]);
+
+    debounceTimers[itemId] = setTimeout(async () => {
+      try {
+        await updateCartQuantity({
+          itemId,
+          quantity: newQty,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }, 600);
+  },
+
+  clearCartAction: async () => {
+    try {
+      await clearCart();
+
+      set({
+        cartItems: [],
+        qtyMap: {},
+      });
+
+      toast.success("Cart is cleared ");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to clear cart");
+    }
+  },
 }));

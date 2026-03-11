@@ -34,9 +34,24 @@ export const getCart = async (req: AuthRequest, res: any) => {
 
 export const deleteCartItem = async (req: AuthRequest, res: any) => {
   try {
-    const cart = await cartService.deleteCartItem(req.body.itemId, req.user?.id);
+    const cart = await cartService.deleteCartItem(
+      req.body.itemId,
+      req.user?.id,
+    );
 
     sendResponse(res, STATUS.OK, MSG.CART.REMOVED, cart);
+  } catch (err: any) {
+    sendResponse(res, STATUS.BAD_REQUEST, err.message);
+  }
+};
+
+export const clearCart = async (req: any, res: any) => {
+  try {
+    const userId = req.user.id;
+
+    const cart = await cartService.clearCart(userId);
+
+    sendResponse(res, STATUS.OK, MSG.CART.CLEARED, cart);
   } catch (err: any) {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }

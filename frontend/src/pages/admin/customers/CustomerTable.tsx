@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 import DataTable, { type TableColumn } from "react-data-table-component";
 import type { Customer, FieldConfig, View, WalletRecord } from "../types.ts";
 import GenericForm from "../../../components/GenericForm.tsx";
-import DeleteModal from "../../../components/DeleteModal.tsx";
 import { FaTrash } from "react-icons/fa";
 import { MdModeEdit } from "react-icons/md";
 import user from "../../../assets/user.jpg";
@@ -17,6 +16,7 @@ import Loader from "../../../ui/Loader.tsx";
 import { registerUser } from "../../../api/authApi.ts";
 import { registerSchema } from "../../../../../backend/validations/authValidation.ts";
 import { getWalletCredits } from "../../../api/walletApi.ts";
+import ConfirmationModal from "../../../components/ConfirmationModal.tsx";
 
 const customStyles = {
   headRow: {
@@ -370,7 +370,8 @@ export default function CustomerTable() {
         setRows(formatted);
       } else {
         toast.error(
-          customersRes?.reason?.response?.data?.message || "Failed to fetch customers",
+          customersRes?.reason?.response?.data?.message ||
+            "Failed to fetch customers",
         );
       }
 
@@ -568,9 +569,10 @@ export default function CustomerTable() {
 
       {/* Delete confirmation modal */}
       {deleteTarget && (
-        <DeleteModal
+        <ConfirmationModal
+          title="Delete This User?"
+          message={"Are you sure you want to delete"}
           entityName={deleteTarget.name}
-          entityLabel="Customer"
           onConfirm={handleDeleteConfirm}
           onCancel={() => setDeleteTarget(null)}
         />
