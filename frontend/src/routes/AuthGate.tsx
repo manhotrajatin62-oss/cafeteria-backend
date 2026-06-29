@@ -16,6 +16,7 @@ const MenuPage = lazy(() => import("../pages/admin/menu/MenuPage"));
 import NotFound from "../ui/NotFound";
 import Loader from "../ui/Loader";
 import ErrorBoundary from "../ui/ErrorBoundary";
+import CustomOrder from "../pages/admin/orders/CustomOrder";
 
 const AuthGate = () => {
   const user = getAuth();
@@ -64,6 +65,7 @@ const AppRoutes = () => {
           <Route path="admin">
             <Route index element={<Dashboard />} />
             <Route path="orders" element={<OrdersPage />} />
+            <Route path="custom-order" element={<CustomOrder />} />
             <Route path="products" element={<ProductTable />} />
             <Route path="customers" element={<CustomerTable />} />
             <Route
@@ -76,7 +78,7 @@ const AppRoutes = () => {
                 </ErrorBoundary>
               }
             />
-            <Route path="account" element={<AccountPage />} />
+            <Route path="account" element={<AccountPage />} />  
           </Route>
         </Route>
 

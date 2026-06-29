@@ -41,6 +41,11 @@ const sidebarAdminData = [
     path: "/admin/orders",
   },
   {
+    icon: FaClipboardList,
+    title: "Custom Order",
+    path: "/admin/custom-order",
+  },
+  {
     icon: FaHamburger,
     title: "Products",
     path: "/admin/products",
@@ -90,7 +95,7 @@ const Sidebar = () => {
         <h1
           className={`text-xl font-bold whitespace-nowrap text-black transition-all duration-200 ${hideSidebar ? "w-0 opacity-0" : "w-auto opacity-100"} `}
         >
-          Le <span className="text-orange">Baratie</span>
+           Délice <span className="text-orange">Café</span>
         </h1>
 
         <button
