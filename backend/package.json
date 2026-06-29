@@ -16,7 +16,7 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
-    "exceljs": "^4.1.1",
+    "exceljs": "^3.4.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
     "helmet": "^8.1.0",
@@ -24,7 +24,7 @@
     "mongoose": "^9.2.1",
     "morgan": "^1.10.1",
     "node-cron": "^4.2.1",
-    "nodemailer": "^8.0.1",
+    "nodemailer": "^9.0.1",
     "pdfkit": "^0.17.2",
     "socket.io": "^4.8.3",
     "zod": "^4.3.6"
