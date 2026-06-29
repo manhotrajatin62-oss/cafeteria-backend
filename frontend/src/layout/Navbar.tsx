@@ -14,7 +14,7 @@ const Navbar = () => {
       <h1
         className={`text-3xl absolute top-[50%] translate-y-[-50%] left-5 font-bold whitespace-nowrap text-black ${hideSidebar ? "block" : "hidden"} `}
       >
-        Le <span className="text-orange">Baratie</span>
+        Délice <span className="text-orange">Café</span>
       </h1>
      {location.pathname == "/" && <div className="flex w-120 items-center justify-between gap-2 rounded-4xl border border-gray-300 px-6">
         <input
