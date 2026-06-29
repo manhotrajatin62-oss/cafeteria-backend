@@ -7,12 +7,13 @@ import helmet from "helmet";
 import appRouter from "./routes/routes.ts";
 import { startDailyReset } from "./utils/resetCategories.ts";
 import { Server } from "socket.io";
+// import crypto from "crypto"
 
 dotenv.config();
 
 const app = express();
 
-// console.log(require("crypto").randomBytes(64).toString("hex"))
+// console.log(crypto.randomBytes(64).toString("hex"))
 
 app.use(express.json());
 app.use(cors());
