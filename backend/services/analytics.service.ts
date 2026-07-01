@@ -89,7 +89,7 @@ const getItemCategoryAnalytics = async (query: any) => {
     result.itemAnalytics
       ?.sort((a: any, b: any) => b.totalSold - a.totalSold)
       .slice(0, 5)
-      .map((item: any, index: number) => ({
+      .map((item: any) => ({
         name: item.name,
         totalSold: item.totalSold,
         totalRevenue: item.totalRevenue,
@@ -224,7 +224,7 @@ const getUserAnalytics = async (query: any) => {
     topUsersByOrders: [...users]
       .sort((a, b) => b.totalOrders - a.totalOrders)
       .slice(0, 5)
-      .map((u, index) => ({
+      .map((u) => ({
         ...u,
       })),
   };

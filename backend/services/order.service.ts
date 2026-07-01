@@ -108,11 +108,14 @@ const confirmOrder = async (orderId: any) => {
     const item = await orderRepo.findId(oi.item);
 
     if (!item) throw new Error(MSG.ITEM.NOT_FOUND);
-    if (item?.quantity < oi.quantity)
-      throw new Error(MSG.ITEM.NOT_ENOUGH_STOCK);
 
-    item.quantity -= oi.quantity;
-    await item.save();
+    if (item?.quantity !== null && item?.quantity !== undefined) {
+      if (item?.quantity < oi.quantity)
+        throw new Error(MSG.ITEM.NOT_ENOUGH_STOCK);
+
+      item.quantity -= oi.quantity;
+      await item.save();
+    }
   }
 
   order.orderStatus = "confirmed";
