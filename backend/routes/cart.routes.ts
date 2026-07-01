@@ -21,6 +21,6 @@ router.post("/add", validate(addCartSchema), addToCart);
 router.patch("/quantity", validate(updateQuantitySchema), updateQuantity);
 router.get("/", getCart);
 router.delete("/remove", deleteCartItem);
-router.delete("/clear", authenticate, clearCart);
+router.delete("/clear", clearCart);
 
 export default router;
