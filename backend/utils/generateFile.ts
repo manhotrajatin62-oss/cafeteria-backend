@@ -41,7 +41,7 @@ export const generateExcel = async (
   res: any,
 ) => {
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("Analytics");
+  const worksheet:any = workbook.addWorksheet("Analytics");
 
   let currentRow = 1;
 
@@ -92,7 +92,7 @@ export const generateExcel = async (
 
   worksheet.mergeCells(`A${currentRow}:${lastColLetter}${currentRow}`);
 
-  const mainCell = worksheet.getCell(`A${currentRow}`);
+  const mainCell:any = worksheet.getCell(`A${currentRow}`);
   mainCell.value = reportTitle;
   mainCell.font = { bold: true, size: 16 };
   mainCell.alignment = {
@@ -115,7 +115,7 @@ export const generateExcel = async (
 
     worksheet.mergeCells(`A${currentRow}:${sectionLastColLetter}${currentRow}`);
 
-    const sectionCell = worksheet.getCell(`A${currentRow}`);
+    const sectionCell:any = worksheet.getCell(`A${currentRow}`);
     sectionCell.value = formatHeader(sectionKey);
     sectionCell.font = { bold: true, size: 13 };
     sectionCell.alignment = { horizontal: "center" };
@@ -126,7 +126,7 @@ export const generateExcel = async (
     const startRow = currentRow;
 
     finalHeaders.forEach((header, colIndex) => {
-      const cell = worksheet.getCell(currentRow, colIndex + 1);
+      const cell:any = worksheet.getCell(currentRow, colIndex + 1);
       cell.value = formatHeader(header);
       cell.font = { bold: true };
       cell.alignment = {
@@ -142,7 +142,7 @@ export const generateExcel = async (
 
     sectionData.forEach((row: any, index: number) => {
       finalHeaders.forEach((header, colIndex) => {
-        const cell = worksheet.getCell(currentRow, colIndex + 1);
+        const cell:any = worksheet.getCell(currentRow, colIndex + 1);
 
         if (header === "S.NO") {
           cell.value = index + 1;
@@ -177,7 +177,7 @@ export const generateExcel = async (
     const column = worksheet.getColumn(i);
     let maxLength = 10;
 
-    column.eachCell({ includeEmpty: true }, (cell) => {
+    column.eachCell({ includeEmpty: true }, (cell:any) => {
       const val = cell.value ? cell.value.toString() : "";
       maxLength = Math.max(maxLength, val.length);
     });
