@@ -2,8 +2,9 @@ import { sendResponse } from "../utils/sendResponse.ts";
 import { MSG } from "../constants/messages.ts";
 import { STATUS } from "../constants/statusCodes.ts";
 import { categoryService } from "../services/category.service.ts";
+import type { Request, Response } from "express";
 
-export const getCategories = async (_: any, res: any) => {
+export const getCategories = async (_: Request, res: Response) => {
   try {
     const categories = await categoryService.getCategories();
 
@@ -13,7 +14,7 @@ export const getCategories = async (_: any, res: any) => {
   }
 };
 
-export const createCategory = async (req: any, res: any) => {
+export const createCategory = async (req: Request, res: Response) => {
   try {
     const category = await categoryService.createCategory(req.body);
 
@@ -23,7 +24,7 @@ export const createCategory = async (req: any, res: any) => {
   }
 };
 
-export const addItemToCategory = async (req: any, res: any) => {
+export const addItemToCategory = async (req: Request, res: Response) => {
   try {
     const category = await categoryService.addItemToCategory(req.body);
 
@@ -33,7 +34,7 @@ export const addItemToCategory = async (req: any, res: any) => {
   }
 };
 
-export const removeItemFromCategory = async (req: any, res: any) => {
+export const removeItemFromCategory = async (req: Request, res: Response) => {
   try {
     const item = await categoryService.removeItemFromCategory(req.body);
 
@@ -43,7 +44,7 @@ export const removeItemFromCategory = async (req: any, res: any) => {
   }
 };
 
-export const deleteCategory = async (req:any, res:any) => {
+export const deleteCategory = async (req:Request, res:Response) => {
   try {
     const deleted = await categoryService.deleteCategory(req.body);
 

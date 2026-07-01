@@ -4,18 +4,19 @@ import { MSG } from "../constants/messages.ts";
 import { generateToken } from "../utils/generateToken.ts";
 import { authService } from "../services/auth.service.ts";
 import type { AuthRequest } from "../middleware/authMiddleware.ts";
+import type { Request, Response } from "express";
 
-export const register = async (req: any, res: any) => {
+export const register = async (req: Request, res: Response) => {
   try {
     const user = await authService.register(req.body);
 
-    sendResponse(res, STATUS.OK, MSG.USER.CREATED, user);
+    sendResponse(res, STATUS.CREATED, MSG.USER.CREATED, user);
   } catch (err: any) {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
 };
 
-export const login = async (req: any, res: any) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const user = await authService.login(req.body);
 
@@ -28,26 +29,26 @@ export const login = async (req: any, res: any) => {
   }
 };
 
-export const getMe = async (req: AuthRequest, res: any) => {
+export const getMe = async (req: AuthRequest, res: Response) => {
   try {
-    const {user, wallet, orders} = await authService.getMe(req.user.id);
+    const { user, wallet, orders } = await authService.getMe(req.user.id);
     sendResponse(res, STATUS.OK, MSG.USER.FETCHED, {
       token: generateToken(user),
       user,
       wallet,
-      orders
+      orders,
     });
   } catch (err: any) {
     sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
 };
 
-export const requestOtp = async(req:any, res:any)=> {
+export const requestOtp = async (req: Request, res: Response) => {
   try {
     const otp = await authService.requestOtp(req.body);
 
-    sendResponse(res, STATUS.CREATED, MSG.OTP_CREATED, otp)
-  } catch (err:any) {
-    sendResponse(res, STATUS.BAD_REQUEST, err.message)
+    sendResponse(res, STATUS.CREATED, MSG.OTP_CREATED, otp);
+  } catch (err: any) {
+    sendResponse(res, STATUS.BAD_REQUEST, err.message);
   }
-}
+};

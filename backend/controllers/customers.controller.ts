@@ -2,8 +2,9 @@ import { MSG } from "../constants/messages.ts";
 import { STATUS } from "../constants/statusCodes.ts";
 import { customersService } from "../services/customers.service.ts";
 import { sendResponse } from "../utils/sendResponse.ts";
+import type { Request, Response } from "express";
 
-export const getCustomers = async (_: any, res: any) => {
+export const getCustomers = async (_: Request, res: Response) => {
   try {
     const customers = await customersService.getCustomers();
 
@@ -13,9 +14,9 @@ export const getCustomers = async (_: any, res: any) => {
   }
 };
 
-export const updateCustomerInfo = async (req: any, res: any) => {
+export const updateCustomerInfo = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id }:any = req.params;
     const { name, email } = req.body;
     const updatedCustomer = await customersService.updateCustomerInfo(id, {
       name,
@@ -28,7 +29,7 @@ export const updateCustomerInfo = async (req: any, res: any) => {
   }
 };
 
-export const deleteCustomer = async (req: any, res: any) => {
+export const deleteCustomer = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 

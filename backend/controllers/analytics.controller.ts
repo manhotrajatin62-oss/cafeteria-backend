@@ -3,8 +3,9 @@ import { sendResponse } from "../utils/sendResponse.ts";
 import { STATUS } from "../constants/statusCodes.ts";
 import { MSG } from "../constants/messages.ts";
 import { generateExcel, generatePDF, normalizeAnalyticsData } from "../utils/generateFile.ts";
+import type {Request, Response} from "express";
 
-export const getItemCategoryAnalytics = async (req: any, res: any) => {
+export const getItemCategoryAnalytics = async (req: Request, res: Response) => {
   try {
     const data = await analyticsService.getItemCategoryAnalytics(req.query);
     sendResponse(res, STATUS.OK, MSG.ANALYTICS.ITEM_ANALYTICS, data);
@@ -13,7 +14,7 @@ export const getItemCategoryAnalytics = async (req: any, res: any) => {
   }
 };
 
-export const getUserAnalytics = async (req: any, res: any) => {
+export const getUserAnalytics = async (req: Request, res: Response) => {
   try {
     const data = await analyticsService.getUserAnalytics(req.query);
     sendResponse(res, STATUS.OK, MSG.ANALYTICS.USER_ANALYTICS, data);
@@ -22,7 +23,7 @@ export const getUserAnalytics = async (req: any, res: any) => {
   }
 };
 
-export const getOrderStats = async (req: any, res: any) => {
+export const getOrderStats = async (req: Request, res: Response) => {
   try {
     const data = await analyticsService.getOrderStats(req.query);
     sendResponse(res, STATUS.OK, MSG.ANALYTICS.ORDER_ANALYTICS, data);
@@ -31,7 +32,7 @@ export const getOrderStats = async (req: any, res: any) => {
   }
 };
 
-export const getRevenueAnalytics = async (req: any, res: any) => {
+export const getRevenueAnalytics = async (req: Request, res: Response) => {
   try {
     const data = await analyticsService.getRevenueAnalytics(req.query);
     sendResponse(res, STATUS.OK, MSG.ANALYTICS.REVENUE_ANALYTICS, data);
@@ -40,7 +41,7 @@ export const getRevenueAnalytics = async (req: any, res: any) => {
   }
 };
 
-export const exportAnalytics = async (req: any, res: any) => {
+export const exportAnalytics = async (req: Request, res: Response) => {
   try {
     const { type } = req.params;
     const { range, format } = req.query;

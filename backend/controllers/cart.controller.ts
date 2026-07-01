@@ -3,8 +3,9 @@ import { MSG } from "../constants/messages.ts";
 import type { AuthRequest } from "../middleware/authMiddleware.ts";
 import { cartService } from "../services/cart.service.ts";
 import { sendResponse } from "../utils/sendResponse.ts";
+import type { Response } from "express";
 
-export const addToCart = async (req: any, res: any) => {
+export const addToCart = async (req: AuthRequest, res: Response) => {
   try {
     const cart = await cartService.addToCart(req.body, req.user.id);
     sendResponse(res, STATUS.OK, MSG.CART.ADDED, cart);
@@ -13,7 +14,7 @@ export const addToCart = async (req: any, res: any) => {
   }
 };
 
-export const updateQuantity = async (req: AuthRequest, res: any) => {
+export const updateQuantity = async (req: AuthRequest, res: Response) => {
   try {
     const cart = await cartService.updateQuantity(req.user.id, req.body);
     sendResponse(res, STATUS.OK, MSG.CART.QUANTITY_UPDATED, cart);
@@ -22,7 +23,7 @@ export const updateQuantity = async (req: AuthRequest, res: any) => {
   }
 };
 
-export const getCart = async (req: AuthRequest, res: any) => {
+export const getCart = async (req: AuthRequest, res: Response) => {
   try {
     const cart = await cartService.getCart(req.user.id);
 
@@ -32,7 +33,7 @@ export const getCart = async (req: AuthRequest, res: any) => {
   }
 };
 
-export const deleteCartItem = async (req: AuthRequest, res: any) => {
+export const deleteCartItem = async (req: AuthRequest, res: Response) => {
   try {
     const cart = await cartService.deleteCartItem(
       req.body.itemId,
@@ -45,7 +46,7 @@ export const deleteCartItem = async (req: AuthRequest, res: any) => {
   }
 };
 
-export const clearCart = async (req: any, res: any) => {
+export const clearCart = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user.id;
 

@@ -2,8 +2,10 @@ import { STATUS } from "../constants/statusCodes.ts";
 import { MSG } from "../constants/messages.ts";
 import { orderService } from "../services/order.service.ts";
 import { sendResponse } from "../utils/sendResponse.ts";
+import type { AuthRequest } from "../middleware/authMiddleware.ts";
+import type { Request, Response } from "express";
 
-export const checkout = async (req: any, res: any) => {
+export const checkout = async (req: AuthRequest, res: Response) => {
   try {
     await orderService.checkout(req.user.id);
     sendResponse(res, STATUS.OK, MSG.ORDER.PLACED);
@@ -12,7 +14,7 @@ export const checkout = async (req: any, res: any) => {
   }
 };
 
-export const adminCheckout = async (req: any, res: any) => {
+export const adminCheckout = async (req: Request, res: Response) => {
   try {
     await orderService.adminCheckout(req.body.userId);
     sendResponse(res, STATUS.OK, MSG.ORDER.PLACED);
@@ -21,7 +23,7 @@ export const adminCheckout = async (req: any, res: any) => {
   }
 };
 
-export const confirmOrder = async (req: any, res: any) => {
+export const confirmOrder = async (req: Request, res: Response) => {
   try {
     const order = await orderService.confirmOrder(req.params.orderId);
     sendResponse(res, STATUS.OK, MSG.ORDER.PLACED, order);
@@ -30,7 +32,7 @@ export const confirmOrder = async (req: any, res: any) => {
   }
 };
 
-export const rejectOrder = async (req: any, res: any) => {
+export const rejectOrder = async (req: Request, res: Response) => {
   try {
     const order = await orderService.rejectOrder(req.params.orderId);
     sendResponse(res, STATUS.OK, MSG.ORDER.PLACED, order);
@@ -39,7 +41,7 @@ export const rejectOrder = async (req: any, res: any) => {
   }
 };
 
-export const listOrders = async (_: any, res: any) => {
+export const listOrders = async (_: Request, res: Response) => {
   try {
     const orders = await orderService.listOrders();
     sendResponse(res, STATUS.OK, MSG.ORDER.FETCHED, orders);

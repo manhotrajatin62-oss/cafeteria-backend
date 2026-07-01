@@ -2,8 +2,9 @@ import { sendResponse } from "../utils/sendResponse.ts";
 import { STATUS } from "../constants/statusCodes.ts";
 import { MSG } from "../constants/messages.ts";
 import { menuService } from "../services/menu.service.ts";
+import type { Request, Response } from "express";
 
-export const getTodayMenu = async (_: any, res: any) => {
+export const getTodayMenu = async (_: Request, res: Response) => {
   try {
     const categories = await menuService.getTodayMenu();
     sendResponse(res, STATUS.OK, MSG.MENU.FETCHED, categories);

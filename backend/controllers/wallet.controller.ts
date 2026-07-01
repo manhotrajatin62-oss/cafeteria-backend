@@ -2,8 +2,10 @@ import { sendResponse } from "../utils/sendResponse.ts";
 import { MSG } from "../constants/messages.ts";
 import { STATUS } from "../constants/statusCodes.ts";
 import { walletService } from "../services/wallet.service.ts";
+import type { AuthRequest } from "../middleware/authMiddleware.ts";
+import type { Request, Response } from "express";
 
-export const addMoney = async (req: any, res: any) => {
+export const addMoney = async (req: Request, res: Response) => {
   try {
     const { userId, amount } = req.body;
     const wallet = await walletService.addMoney(userId, amount);
@@ -13,7 +15,7 @@ export const addMoney = async (req: any, res: any) => {
   }
 };
 
-export const getWalletDetails = async (req: any, res: any) => {
+export const getWalletDetails = async (req: AuthRequest, res: Response) => {
   try {
     const { wallet, history } = await walletService.getWalletDetails(
       req.user.id,
@@ -24,7 +26,7 @@ export const getWalletDetails = async (req: any, res: any) => {
   }
 };
 
-export const getWalletCredits = async (_: any, res: any) => {
+export const getWalletCredits = async (_: Request, res: Response) => {
   try {
     const credits = await walletService.getWalletCredits();
 
