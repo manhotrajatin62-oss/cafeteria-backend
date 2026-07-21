@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-export const addToCart = async (categoryId: string, itemId: string) => {
+export const addToCart = (categoryId: string, itemId: string) => {
   return apiClient.post("/cart/add", {
     categoryId,
     itemId

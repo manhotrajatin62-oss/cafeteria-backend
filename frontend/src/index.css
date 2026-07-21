@@ -8,7 +8,7 @@
 }
 
 @theme {
-  --color-orange: #fd7d30;
+  --color-orange: #fc8d29;
   --color-light-orange: #ffc09a;
   --color-dark-orange: #ff6e14;
   --color-icon : #bebebe;
@@ -16,13 +16,12 @@
 
 @layer components {
   .form-input {
-    @apply w-90 transition-[border] flex items-center gap-3 rounded-md border px-3
+    @apply w-90 transition-[border] overflow-hidden flex items-center gap-3 rounded-md border pl-3
     text-sm duration-150 ease-in focus:border-orange;
   }
   
   .form-box {
-    @apply top-[50%] translate-[-50%] absolute flex flex-col items-start
-    transition-all duration-150 ease-in;
+    @apply top-0 absolute flex flex-col items-start transition-all duration-150 ease-in;
   }
 }
 
