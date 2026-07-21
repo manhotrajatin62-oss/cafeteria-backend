@@ -86,7 +86,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`h-dvh border-r border-gray-300 bg-white transition-[width] duration-300 ease-in-out dark:bg-black ${hideSidebar ? "w-20" : "w-56"} `}
+      className={`h-dvh border-r border-gray-300 bg-white transition-[width] duration-300 ease-in-out dark:bg-black ${hideSidebar ? "w-20" : "w-60"} `}
     >
       {/* brand logo */}
       <div className="relative flex items-center gap-4 border-b border-gray-300 p-3">
