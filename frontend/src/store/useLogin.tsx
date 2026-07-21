@@ -2,19 +2,14 @@ import { create } from "zustand";
 import { requestOtp, loginWithOtp, registerUser } from "../api/authApi";
 import toast from "react-hot-toast";
 
-type Name = {
+interface Name {
   value: string;
   status: string;
   message: string;
   success: boolean;
 };
 
-type Email = {
-  value: string;
-  status: string;
-  message: string;
-  success: boolean;
-};
+interface Email extends Name{}
 
 type LoginStore = {
   showLogin: boolean;
@@ -49,6 +44,8 @@ type LoginStore = {
 
   handleNameChange: (e: any) => void;
   handleEmailChange: (e: any) => void;
+
+  handleErrorsReset: ()=> void;
 
   handleFormSubmit: (e: any) => Promise<void>;
   handleSubmitOtp: (e: any, navigate: any) => Promise<void>;
@@ -307,6 +304,24 @@ export const useLogin = create<LoginStore>((set, get) => ({
         set({ showLoader: false, showLogin: false });
       }, 500);
     }
+  },
+
+  handleErrorsReset: ()=>{
+
+    const state = useLogin.getState();
+
+    set({
+       name: {
+   ...state.name,
+    status: "idle",
+    message: "",
+  },
+  email: {
+    ...state.email,
+    status: "idle",
+    message: "",
+  },
+    })
   },
 
   handleSubmitOtp: async (e, navigate) => {

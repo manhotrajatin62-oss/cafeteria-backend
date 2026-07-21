@@ -18,6 +18,8 @@ const InputFields = () => {
     <>
       {/* name field */}
       {!showLogin && (
+        <>
+        <label className="text-sm mb-1 font-medium" onClick={()=>setHoverNameInput(true)} htmlFor="name">Name</label>
         <div className="h-16">
           <div
             className={`${hoverNameInput ? (name.status == "error" ? "border-red-500" : "border-orange") : name.status == "error" ? "border-red-500" : "border-gray-300"} form-input`}
@@ -31,8 +33,8 @@ const InputFields = () => {
               autoComplete="on"
               value={name.value}
               onChange={handleNameChange}
-              name="text"
-              id="text"
+              name="name"
+              id="name"
               className="w-full py-2 outline-0"
             />
           </div>
@@ -43,9 +45,11 @@ const InputFields = () => {
             ""
           )}
         </div>
+        </>
       )}
 
       {/* email field */}
+      <label className="text-sm mb-1 font-medium" onClick={()=>setHoverEmailInput(true)} htmlFor="email">Email</label>
       <div className="mb-2 h-16">
         <div
           className={`${hoverEmailInput ? (email.status == "error" ? "border-red-500" : "border-orange") : email.status == "error" ? "border-red-500" : "border-gray-300"} form-input`}

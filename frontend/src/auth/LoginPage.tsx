@@ -1,19 +1,20 @@
-import login from "../assets/illustrations/login.svg";
+import login from "../assets/login-hero.jpg";
 import Form from "./Form";
 
 const LoginPage = () => {
   return (
-    <section className="flex h-dvh items-center justify-center">
+    <section className="flex min-h-dvh items-stretch justify-between p-5">
+      <Form />
+      
+      <div className="basis-[60%] z-98 overflow-hidden rounded-2xl">
       <img
         draggable="false"
-        className="w-100"
+        className="w-full h-full object-cover"
         src={login}
-        alt="login illustration"
+        alt="login hero"
       />
+      </div>
 
-      <div className="mx-15 h-[80%] w-0.5 bg-gray-200" />
-
-      <Form />
     </section>
   );
 };
