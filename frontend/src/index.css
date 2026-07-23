@@ -23,6 +23,18 @@
   .form-box {
     @apply top-0 absolute flex flex-col items-start transition-all duration-150 ease-in;
   }
+
+  .nav-list{
+    @apply hover:text-orange cursor-pointer transition-colors duration-150 ease-in
+  }
+
+  .account-dropdown{
+    @apply hover:bg-orange flex items-center gap-2 hover:text-white rounded-md px-2 py-1 cursor-pointer text-sm
+  }
+
+  .account-divider{
+    @apply text-gray-300 w-[90%] mx-auto bg-gray-300 my-1
+  }
 }
 
 * {

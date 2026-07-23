@@ -177,9 +177,9 @@ const OtpPage = () => {
         <button
         type="button"
         onClick={() => setShowOtpPage(false)}
-        className={`bg-transparent flex items-center gap-4 justify-center border border-gray-300 w-full cursor-pointer rounded-lg py-2 text-sm font-semibold text-black`}
+        className={`bg-transparent group flex items-center gap-4 justify-center border border-gray-300 w-full cursor-pointer rounded-lg py-2 text-sm font-semibold text-black`}
       >
-        <MdKeyboardArrowLeft size={25} />
+        <MdKeyboardArrowLeft className="group-hover:-translate-x-1 transition-[translate] duration-200 ease-in" size={25} />
         Back to Sign in
       </button>
 
