@@ -35,6 +35,10 @@
   .account-divider{
     @apply text-gray-300 w-[90%] mx-auto bg-gray-300 my-1
   }
+
+  .carousel-btn{
+    @apply bg-linear-to-br shadow-sm shadow-black/30 from-orange to-dark-orange rounded-full min-h-12 flex items-center justify-center cursor-pointer min-w-12
+  }
 }
 
 * {

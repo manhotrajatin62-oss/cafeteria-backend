@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsFillCupHotFill } from "react-icons/bs";
 import { GiHotMeal } from "react-icons/gi";
 import { IoFastFood } from "react-icons/io5";
@@ -10,6 +10,8 @@ import { getTodayMenu } from "../../api/menuApi.ts";
 import Loader from "../../ui/Loader.tsx";
 import { getCart } from "../../api/cartApi.ts";
 import toast from "react-hot-toast";
+import Team from "../about us/Team.tsx";
+import { ImArrowLeft2, ImArrowRight2 } from "react-icons/im";
 
 const categoryIcons: Record<string, any> = {
   Breakfast: BsFillCupHotFill,
@@ -34,6 +36,40 @@ const Home = () => {
   const [categories, setCategories] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isScrollable, setIsScrollable] = useState(false);
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  const activeIndex = categories.findIndex((c)=>{
+    return c._id === activeCategory?._id
+  })
+
+  const scrollToCard = (direction : 'left' | 'right') => {
+
+    if(categories.length == 0) return;
+
+    let index = activeIndex;
+    
+    if(direction == 'right'){
+      index = (index + 1) % categories.length;
+    }else{
+      index = (index - 1 + categories.length) % categories.length;
+    }
+
+    const nextCategory = categories[index];
+
+    setActiveCategory(nextCategory);
+
+    const container = scrollContainerRef.current;
+
+    if(!container) return;
+
+    (container.children[index] as HTMLButtonElement)?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+      block: 'nearest'
+    })
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +112,48 @@ const Home = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+
+    if (!scrollContainer) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      const isScrollable =
+        scrollContainer.scrollWidth > scrollContainer.clientWidth;
+
+      if (!isScrollable) return;
+
+      const scrollValue =
+        Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+
+      scrollContainer.scrollLeft += scrollValue;
+
+      e.preventDefault();
+    };
+
+    scrollContainer.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => scrollContainer.removeEventListener("wheel", handleWheel);
+  }, [scrollContainerRef.current]);
+
+  useEffect(()=>{
+    const container = scrollContainerRef.current;
+
+    if(!container) return;
+      const checkScrollable = ()=>{
+
+    setIsScrollable(container.scrollWidth > container.clientWidth)
+  }
+
+  checkScrollable();
+
+  const observer = new ResizeObserver(checkScrollable);
+
+  observer.observe(container);
+
+    return ()=> observer.disconnect()
+  },[categories])
+
   return (
     <section className="flex flex-col items-center">
       <ImageCarousel />
@@ -93,8 +171,11 @@ const Home = () => {
           {categories.length === 0 ? (
             <p className="my-20 text-gray-500">No categories available</p>
           ) : (
-            <div
-              className={`${showCart ? "mx-10" : "mx-0"} flex flex-wrap items-center gap-6`}
+           <div className="flex items-center gap-4 max-w-[90%]">
+           {isScrollable && <button className="carousel-btn" onClick={()=>scrollToCard('left')}><ImArrowLeft2 color="white" size={20} /></button>}
+             <div
+              ref={scrollContainerRef}
+              className={`${showCart ? "mx-10" : "mx-0"} flex items-center gap-6 overflow-x-scroll`}
             >
               {categories.map((cat) => {
                 const Icon = categoryIcons[cat.name];
@@ -110,6 +191,8 @@ const Home = () => {
                 );
               })}
             </div>
+          {isScrollable &&  <button className="carousel-btn" onClick={()=>scrollToCard('right')}><ImArrowRight2 color="white" size={20} /></button>}
+           </div>
           )}
 
           {/* CATEGORY HEADER */}
@@ -149,6 +232,8 @@ const Home = () => {
           </div>
         </>
       )}
+
+      <Team />
     </section>
   );
 };

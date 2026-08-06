@@ -1,5 +1,5 @@
 // import team_image from "../../assets/team.png";
-import team_image from "../../assets/team1.jpg";
+import team_image from "../../assets/team.jpg";
 
 const Team = () => {
   return (

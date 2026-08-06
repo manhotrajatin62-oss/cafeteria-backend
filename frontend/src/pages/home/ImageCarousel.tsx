@@ -10,32 +10,34 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { useUser } from "../../store/useUser";
+import OrangeButton from "../../ui/OrangeButton";
+
 
 const slides = [
   {
     id: 1,
     image: slide1,
-    title: "Fresh & Delicious",
-    subtitle: "Experience premium taste every day",
+    title: "Flavor Worth Savoring",
+    subtitle: "Freshly prepared dishes made to turn every bite into a moment.",
   },
   {
     id: 2,
     image: slide2,
-    title: "Crafted With Passion",
-    subtitle: "Quality ingredients. Perfect flavors.",
+    title: "Crafted From the Finest",
+    subtitle: "Quality ingredients, thoughtful recipes, and flavors made with care.",
   },
   {
     id: 3,
     image: slide3,
-    title: "Made For Food Lovers",
-    subtitle: "Serving happiness on every plate.",
+    title: "Made for Every Craving",
+    subtitle: "Comforting favorites and bold tastes, served fresh every time.",
   },
 ];
 
 const ImageCarousel = () => {
 
   return (
-    <div className={"w-260 relative h-100"}>
+    <div className={"w-full relative h-150"}>
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
@@ -49,7 +51,7 @@ const ImageCarousel = () => {
       >
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative h-100 w-full">
+            <div className="relative h-full w-full">
               {/* Background Image */}
               <img
                 draggable="false"
@@ -62,13 +64,16 @@ const ImageCarousel = () => {
               <div className="absolute inset-0 bg-black/40" />
 
               {/* Text Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+              <div className="absolute inset-0 flex flex-col items-start justify-center ml-10 px-6 text-center text-white">
+                <h3 className="animate-fadeIn mb-4 text-sm">WELCOME</h3>
                 <h2 className="animate-fadeIn mb-4 text-4xl font-bold md:text-5xl">
                   {slide.title}
                 </h2>
-                <p className="animate-fadeUp max-w-2xl text-lg md:text-xl">
+                <p className="animate-fadeUp mb-4 text-gray-300 max-w-2xl text-lg md:text-lg">
                   {slide.subtitle}
                 </p>
+
+                <OrangeButton text={"Order Now"}/>
               </div>
             </div>
           </SwiperSlide>
