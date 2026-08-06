@@ -68,7 +68,7 @@ const Form = () => {
           </div>
 
           {/* signup button */}
-          <p className="self-center text-sm">
+          <p className="self-center h-12 text-sm">
             {showLogin ? "Don't" : "Already"} have an account?{" "}
             <button
               onClick={(e: any) => {
